@@ -1,0 +1,11 @@
+node_modules/
+__pycache__/
+*.pyc
+.env
+.env.*
+keys.txt
+don'tpush.txt
+.next/
+build/
+dist/
+.DS_Store

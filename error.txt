@@ -1,0 +1,84 @@
+backend-1   | updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+backend-1   | See README for more details:
+backend-1   |                                                                                            
+backend-1   | https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+backend-1   |                                                                                            
+backend-1   |   import google.generativeai as genai
+backend-1   | Traceback (most recent call last):
+backend-1   |   File "/usr/local/bin/uvicorn", line 8, in <module>
+backend-1   |     sys.exit(main())                                                                       
+backend-1   |              ^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1485, in __call__
+backend-1   |     return self.main(*args, **kwargs)                                                      
+backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1406, in main
+backend-1   |     rv = self.invoke(ctx)                                                                  
+backend-1   |          ^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1269, in invoke
+backend-1   |     return ctx.invoke(self.callback, **ctx.params)                                         
+backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/click/core.py", line 824, in invoke
+backend-1   |     return callback(*args, **kwargs)
+backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/main.py", line 433, in main
+backend-1   |     run(
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/main.py", line 606, in run
+backend-1   |     server.run()
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/server.py", line 75, in run
+backend-1   |     return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())                                                                                                    
+backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                                                                                    
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run                                                                                                        
+backend-1   |     return runner.run(main)
+backend-1   |            ^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+backend-1   |     return self._loop.run_until_complete(task)                                             
+backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+backend-1   |     return future.result()
+backend-1   |            ^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/server.py", line 79, in serve      
+backend-1   |     await self._serve(sockets)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/server.py", line 86, in _serve
+
+backend-1   |     config.load()                                                                          
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/config.py", line 441, in load
+backend-1   |     self.loaded_app = import_from_string(self.app)                                         
+backend-1   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/importer.py", line 19, in import_from_string                                                                                                
+backend-1   |     module = importlib.import_module(module_str)
+backend-1   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/importlib/__init__.py", line 126, in import_module
+backend-1   |     return _bootstrap._gcd_import(name[level:], package, level)                            
+backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import                          
+backend-1   |   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+backend-1   |   File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+backend-1   |   File "<frozen importlib._bootstrap>", line 690, in _load_unlocked                        
+backend-1   |   File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+backend-1   |   File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed             
+backend-1   |   File "/app/main.py", line 3, in <module>
+backend-1   |     from routers import profiles, squads, challenges, stats
+backend-1   |   File "/app/routers/squads.py", line 12, in <module>
+backend-1   |     model = genai.GenerativeModel("gemini-2.0-flash", tools=[{"google_search": {}}])
+backend-1   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^       
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/google/generativeai/generative_models.py", line 87, in __init__                                                                                     
+backend-1   |     self._tools = content_types.to_function_library(tools)
+backend-1   |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/google/generativeai/types/content_types.py", line 917, in to_function_library                                                                       
+backend-1   |     return FunctionLibrary(tools=lib)
+backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/google/generativeai/types/content_types.py", line 855, in __init__                                                                                  
+backend-1   |     tools = _make_tools(tools)
+backend-1   |             ^^^^^^^^^^^^^^^^^^                                                             
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/google/generativeai/types/content_types.py", line 898, in _make_tools                                                                               
+backend-1   |     tools = [_make_tool(t) for t in tools]
+backend-1   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                                 
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/google/generativeai/types/content_types.py", line 898, in <listcomp>                                                                                
+backend-1   |     tools = [_make_tool(t) for t in tools]
+backend-1   |              ^^^^^^^^^^^^^                                                                 
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/google/generativeai/types/content_types.py", line 823, in _make_tool
+backend-1   |     return Tool(function_declarations=[protos.FunctionDeclaration(**fd)])
+backend-1   |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                    
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/proto/message.py", line 673, in __init__
+backend-1   |     raise ValueError(
+backend-1   | ValueError: Unknown field for FunctionDeclaration: google_search
