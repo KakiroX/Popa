@@ -89,7 +89,12 @@ def join_squad(squad_id: str, role_in_squad: str, user = Depends(get_current_use
     squad_res = supabase.table("squads").select("*").eq("id", squad_id).execute()
     if not squad_res.data or not squad_res.data[0].get("is_open"):
         raise HTTPException(status_code=400, detail="Squad not found or closed")
-        
+
+    # Check if user is already a member
+    member_check = supabase.table("squad_members").select("*").eq("squad_id", squad_id).eq("user_id", user.id).execute()
+    if member_check.data:
+        raise HTTPException(status_code=400, detail="You are already a member of this squad")
+
     member_data = {
         "squad_id": squad_id,
         "user_id": user.id,
@@ -97,7 +102,6 @@ def join_squad(squad_id: str, role_in_squad: str, user = Depends(get_current_use
     }
     response = supabase.table("squad_members").insert(member_data).execute()
     return response.data[0]
-
 @router.get("/{squad_id}/challenges")
 def get_squad_challenges(squad_id: str):
     response = supabase.table("challenges").select("*").eq("squad_id", squad_id).order("created_at", desc=True).execute()
