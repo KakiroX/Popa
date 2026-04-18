@@ -1,13 +1,18 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import profiles, squads, challenges, stats
 
 app = FastAPI(title="Squad Navigator API")
 
+# Allow dynamic CORS based on environment variables
+frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+allowed_origins = [url.strip() for url in frontend_url.split(",")] if frontend_url != "*" else ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
-    allow_credentials=True,
+    allow_origins=allowed_origins,
+    allow_credentials=True if frontend_url != "*" else False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

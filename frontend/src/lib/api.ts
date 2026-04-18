@@ -35,6 +35,7 @@ export const api = {
     getMe: () => apiFetch('/api/profiles/me'),
     getById: (id: string) => apiFetch(`/api/profiles/${id}`),
     updateMe: (data: any) => apiFetch('/api/profiles/me', { method: 'PUT', body: JSON.stringify(data) }),
+    getCareerAdvice: () => apiFetch('/api/profiles/me/career-advice'),
   },
   squads: {
     list: (params?: { focus_area?: string; open_only?: boolean }) => {

@@ -97,12 +97,16 @@ def get_challenge(challenge_id: str):
         raise HTTPException(status_code=404, detail="Challenge not found")
     return response.data[0]
 
+from datetime import datetime
+
 @router.post("/{challenge_id}/submit")
 def submit_challenge(challenge_id: str, sub: ChallengeSubmission, user = Depends(get_current_user)):
     chal_res = supabase.table("challenges").select("*").eq("id", challenge_id).execute()
     if not chal_res.data:
          raise HTTPException(status_code=404, detail="Challenge not found")
-    squad_id = chal_res.data[0]["squad_id"]
+    
+    challenge = chal_res.data[0]
+    squad_id = challenge["squad_id"]
     
     sub_data = {
         "challenge_id": challenge_id,
@@ -113,4 +117,27 @@ def submit_challenge(challenge_id: str, sub: ChallengeSubmission, user = Depends
     }
     
     res = supabase.table("challenge_submissions").insert(sub_data).execute()
+    
+    # Mark challenge as completed
+    supabase.table("challenges").update({"status": "completed"}).eq("id", challenge_id).execute()
+    
+    # Give achievement to all squad members
+    members_res = supabase.table("squad_members").select("*, profiles(*)").eq("squad_id", squad_id).execute()
+    
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    new_ach = {
+        "title": f"Squad Project: {challenge.get('title', 'Unknown')}",
+        "description": f"Successfully delivered the {challenge.get('category')} challenge. {sub.content[:50]}...",
+        "type": "project",
+        "date": today_str
+    }
+    
+    for member in members_res.data:
+        profile = member.get("profiles", {})
+        if not profile: continue
+        
+        current_ach = profile.get("achievements") or []
+        current_ach.append(new_ach)
+        supabase.table("profiles").update({"achievements": current_ach}).eq("id", profile["id"]).execute()
+        
     return res.data[0]

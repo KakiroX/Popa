@@ -16,6 +16,10 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [recommendedSquads, setRecommendedSquads] = useState<any[]>([]);
 
+  // AI Career Advisor State
+  const [adviceLoading, setAdviceLoading] = useState(false);
+  const [careerAdvice, setCareerAdvice] = useState<string | null>(null);
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -39,6 +43,18 @@ export default function DashboardPage() {
     }
     fetchData();
   }, []);
+
+  const handleGetCareerAdvice = async () => {
+    try {
+      setAdviceLoading(true);
+      const res = await api.profiles.getCareerAdvice();
+      setCareerAdvice(res.advice);
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to get career advice');
+    } finally {
+      setAdviceLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -192,6 +208,43 @@ export default function DashboardPage() {
               {recommendedSquads.length === 0 && (
                 <p className="text-sm text-muted-foreground col-span-2 text-center py-4 glass rounded-xl">No specific recommendations yet. Browse all squads!</p>
               )}
+            </div>
+
+            {/* AI Career Advisor Section */}
+            <div className="pt-8">
+              <Card className="glass border border-primary/20 bg-primary/5">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-primary" /> AI Career Advisor
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Get personalized recommendations for real-world jobs, internships, or open-source projects based on your major, skills, and squad achievements.
+                  </p>
+                  
+                  {!careerAdvice && !adviceLoading && (
+                    <Button onClick={handleGetCareerAdvice} className="btn-primary" disabled={adviceLoading}>
+                      Ask for Career Advice
+                    </Button>
+                  )}
+                  
+                  {adviceLoading && (
+                    <div className="flex items-center text-primary text-sm gap-2 mt-4">
+                      <Loader2 className="w-4 h-4 animate-spin" /> Fetching real-world opportunities...
+                    </div>
+                  )}
+                  
+                  {careerAdvice && (
+                    <div className="mt-4 p-4 rounded-xl bg-muted/50 border border-border prose prose-invert text-sm max-w-none">
+                      <div dangerouslySetInnerHTML={{ __html: careerAdvice.replace(/\n/g, '<br/>') }} />
+                      <Button onClick={handleGetCareerAdvice} variant="outline" size="sm" className="mt-4 border-border">
+                        Refresh Advice
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
