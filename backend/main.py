@@ -8,14 +8,24 @@ app = FastAPI(title="Squad Navigator API")
 # Allow dynamic CORS based on environment variables
 frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
-# Clean up URLs (remove trailing slashes, spaces) to prevent CORS matching issues
+# Clean up URLs and provide sensible defaults
 if frontend_url == "*":
     allowed_origins = ["*"]
 else:
-    allowed_origins = [url.strip().rstrip("/") for url in frontend_url.split(",") if url.strip()]
-    # Always allow localhost for local development just in case
-    if "http://localhost:3000" not in allowed_origins:
-        allowed_origins.append("http://localhost:3000")
+    # Split by comma and clean up
+    origins = [url.strip().rstrip("/") for url in frontend_url.split(",") if url.strip()]
+    
+    # Ensure common dev and potential production origins are included if not "*"
+    # This helps if the user forgot to update their FRONTEND_URL environment variable
+    defaults = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
+    for d in defaults:
+        if d not in origins:
+            origins.append(d)
+    
+    allowed_origins = origins
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,6 +33,7 @@ app.add_middleware(
     allow_credentials=True if frontend_url != "*" else False,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 app.include_router(profiles.router, prefix="/api/profiles", tags=["Profiles"])
 app.include_router(squads.router, prefix="/api/squads", tags=["Squads"])
