@@ -1,84 +1,136 @@
-backend-1   | updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
-backend-1   | See README for more details:
-backend-1   |                                                                                            
-backend-1   | https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
-backend-1   |                                                                                            
-backend-1   |   import google.generativeai as genai
+ HTTP/1.1" 500 Internal Server Error
+backend-1   | ERROR:    Exception in ASGI application
 backend-1   | Traceback (most recent call last):
-backend-1   |   File "/usr/local/bin/uvicorn", line 8, in <module>
-backend-1   |     sys.exit(main())                                                                       
-backend-1   |              ^^^^^^
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1485, in __call__
-backend-1   |     return self.main(*args, **kwargs)                                                      
-backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1406, in main
-backend-1   |     rv = self.invoke(ctx)                                                                  
-backend-1   |          ^^^^^^^^^^^^^^^^
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1269, in invoke
-backend-1   |     return ctx.invoke(self.callback, **ctx.params)                                         
-backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/click/core.py", line 824, in invoke
-backend-1   |     return callback(*args, **kwargs)
-backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/main.py", line 433, in main
-backend-1   |     run(
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/main.py", line 606, in run
-backend-1   |     server.run()
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/server.py", line 75, in run
-backend-1   |     return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())                                                                                                    
-backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                                                                                    
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run                                                                                                        
-backend-1   |     return runner.run(main)
-backend-1   |            ^^^^^^^^^^^^^^^^
-backend-1   |   File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
-backend-1   |     return self._loop.run_until_complete(task)                                             
-backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-backend-1   |   File "/usr/local/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
-backend-1   |     return future.result()
-backend-1   |            ^^^^^^^^^^^^^^^
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/server.py", line 79, in serve      
-backend-1   |     await self._serve(sockets)
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/server.py", line 86, in _serve
-
-backend-1   |     config.load()                                                                          
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/config.py", line 441, in load
-backend-1   |     self.loaded_app = import_from_string(self.app)                                         
-backend-1   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/importer.py", line 19, in import_from_string                                                                                                
-backend-1   |     module = importlib.import_module(module_str)
-backend-1   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-backend-1   |   File "/usr/local/lib/python3.11/importlib/__init__.py", line 126, in import_module
-backend-1   |     return _bootstrap._gcd_import(name[level:], package, level)                            
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/protocols/http/h11_impl.py", line 415, in run_asgi                                                                                          
+backend-1   |     result = await app(  # type: ignore[func-returns-value]
+backend-1   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__                                                                                          
+backend-1   |     return await self.app(scope, receive, send)
+backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                            
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/fastapi/applications.py", line 1159, in __call__                                                                                                    
+backend-1   |     await super().__call__(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__                                                                                                    
+backend-1   |     await self.middleware_stack(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__                                                                                              
+backend-1   |     raise exc
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__                                                                                              
+backend-1   |     await self.app(scope, receive, _send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/cors.py", line 96, in __call__                                                                                                 
+backend-1   |     await self.simple_response(scope, receive, send, request_headers=headers)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/cors.py", line 154, in simple_response                                                                                         
+backend-1   |     await self.app(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__                                                                                           
+backend-1   |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app                                                                                           
+backend-1   |     raise exc
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app                                                                                           
+backend-1   |     await app(scope, receive, sender)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__                                                                                         
+backend-1   |     await self.app(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__                                                                                                        
+backend-1   |     await self.middleware_stack(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+backend-1   |     await route.handle(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle
+backend-1   |     await self.app(scope, receive, send)                                                   
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+backend-1   |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app                                                                                           
+backend-1   |     raise exc
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app                                                                                           
+backend-1   |     await app(scope, receive, sender)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 120, in app
+backend-1   |     response = await f(request)
+backend-1   |                ^^^^^^^^^^^^^^^^                                                            
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 674, in app
+backend-1   |     raw_response = await run_endpoint_function(
+backend-1   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 330, in run_endpoint_function                                                                                             
+backend-1   |     return await run_in_threadpool(dependant.call, **values)
+backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                               
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/concurrency.py", line 32, in run_in_threadpool                                                                                            
+backend-1   |     return await anyio.to_thread.run_sync(func)
+backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                            
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/anyio/to_thread.py", line 63, in run_sync
+backend-1   |     return await get_async_backend().run_sync_in_worker_thread(                            
+backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                            
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 2518, in run_sync_in_worker_thread                                                                               
+backend-1   |     return await future
+backend-1   |            ^^^^^^^^^^^^                                                                    
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 1002, in run                                                                                                     
+backend-1   |     result = context.run(func, *args)
+backend-1   |              ^^^^^^^^^^^^^^^^^^^^^^^^                                                      
+backend-1   |   File "/app/routers/squads.py", line 108, in get_squad_messages
+backend-1   |     response = supabase.table("squad_messages").select("*, profiles(*)").eq("squad_id", squad_id).order("created_at", desc=True).limit(50).execute()                                                
+backend-1   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                                
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/postgrest/_sync/request_builder.py", line 53, in execute                                                                                            
+backend-1   |     raise APIError(dict(json_obj))
+backend-1   | postgrest.exceptions.APIError: {'message': "Could not find the table 'public.squad_messages' in the schema cache", 'code': 'PGRST205', 'hint': "Perhaps you meant the table 'public.squad_members'", 'details': None}
+backend-1   | INFO:     172.21.0.1:48632 - "POST /api/squads/51d9fcf9-399a-4149-8600-9cefe8146387/messages HTTP/1.1" 500 Internal Server Error
+backend-1   | ERROR:    Exception in ASGI application
+backend-1   | Traceback (most recent call last):
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/protocols/http/h11_impl.py", line 415, in run_asgi                                                                                          
+backend-1   |     result = await app(  # type: ignore[func-returns-value]
+backend-1   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__                                                                                          
+backend-1   |     return await self.app(scope, receive, send)
+backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/fastapi/applications.py", line 1159, in __call__                                                                                                    
+backend-1   |     await super().__call__(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+backend-1   |     await self.middleware_stack(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__                                                                                              
+backend-1   |     raise exc
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__                                                                                              
+backend-1   |     await self.app(scope, receive, _send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/cors.py", line 96, in __call__
+backend-1   |     await self.simple_response(scope, receive, send, request_headers=headers)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/cors.py", line 154, in simple_response                                                                                         
+backend-1   |     await self.app(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__                                                                                           
+backend-1   |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app                                                                                           
+backend-1   |     raise exc
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app                                                                                           
+backend-1   |     await app(scope, receive, sender)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__                                                                                         
+backend-1   |     await self.app(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+backend-1   |     await self.middleware_stack(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+backend-1   |     await route.handle(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle 
+backend-1   |     await self.app(scope, receive, send)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+backend-1   |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)                 
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app                                                                                           
+backend-1   |     raise exc
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+backend-1   |     await app(scope, receive, sender)
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 120, in app
+backend-1   |     response = await f(request)                                                            
+backend-1   |                ^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 674, in app      
+backend-1   |     raw_response = await run_endpoint_function(                                            
+backend-1   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 330, in run_endpoint_function                                                                                             
+backend-1   |     return await run_in_threadpool(dependant.call, **values)
+backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/starlette/concurrency.py", line 32, in run_in_threadpool                                                                                            
+backend-1   |     return await anyio.to_thread.run_sync(func)
+backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/anyio/to_thread.py", line 63, in run_sync
+backend-1   |     return await get_async_backend().run_sync_in_worker_thread(
 backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-backend-1   |   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import                          
-backend-1   |   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
-backend-1   |   File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
-backend-1   |   File "<frozen importlib._bootstrap>", line 690, in _load_unlocked                        
-backend-1   |   File "<frozen importlib._bootstrap_external>", line 940, in exec_module
-backend-1   |   File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed             
-backend-1   |   File "/app/main.py", line 3, in <module>
-backend-1   |     from routers import profiles, squads, challenges, stats
-backend-1   |   File "/app/routers/squads.py", line 12, in <module>
-backend-1   |     model = genai.GenerativeModel("gemini-2.0-flash", tools=[{"google_search": {}}])
-backend-1   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^       
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/google/generativeai/generative_models.py", line 87, in __init__                                                                                     
-backend-1   |     self._tools = content_types.to_function_library(tools)
-backend-1   |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/google/generativeai/types/content_types.py", line 917, in to_function_library                                                                       
-backend-1   |     return FunctionLibrary(tools=lib)
-backend-1   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/google/generativeai/types/content_types.py", line 855, in __init__                                                                                  
-backend-1   |     tools = _make_tools(tools)
-backend-1   |             ^^^^^^^^^^^^^^^^^^                                                             
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/google/generativeai/types/content_types.py", line 898, in _make_tools                                                                               
-backend-1   |     tools = [_make_tool(t) for t in tools]
-backend-1   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                                 
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/google/generativeai/types/content_types.py", line 898, in <listcomp>                                                                                
-backend-1   |     tools = [_make_tool(t) for t in tools]
-backend-1   |              ^^^^^^^^^^^^^                                                                 
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/google/generativeai/types/content_types.py", line 823, in _make_tool
-backend-1   |     return Tool(function_declarations=[protos.FunctionDeclaration(**fd)])
-backend-1   |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                    
-backend-1   |   File "/usr/local/lib/python3.11/site-packages/proto/message.py", line 673, in __init__
-backend-1   |     raise ValueError(
-backend-1   | ValueError: Unknown field for FunctionDeclaration: google_search
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 2518, in run_sync_in_worker_thread                                                                               
+backend-1   |     return await future
+backend-1   |            ^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 1002, in run
+backend-1   |     result = context.run(func, *args)
+backend-1   |              ^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/app/routers/squads.py", line 120, in send_squad_message
+backend-1   |     user_msg_res = supabase.table("squad_messages").insert(user_msg_data).execute()
+backend-1   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend-1   |   File "/usr/local/lib/python3.11/site-packages/postgrest/_sync/request_builder.py", line 53, in execute                                                                                            
+backend-1   |     raise APIError(dict(json_obj))
+backend-1   | postgrest.exceptions.APIError: {'message': "Could not find the table 'public.squad_messages' in the schema cache", 'code': 'PGRST205', 'hint': "Perhaps you meant the table 'public.squad_members'", 'details': None}

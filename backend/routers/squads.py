@@ -122,8 +122,8 @@ def send_squad_message(squad_id: str, msg: MessageCreate, user = Depends(get_cur
     response_messages = [user_msg_res.data[0]]
 
     content_strip = msg.content.strip()
-    if content_strip.lower().startswith("@ai"):
-        command = content_strip[3:].strip()
+    if content_strip.lower().startswith("/ai"):
+        user_prompt = content_strip[3:].strip()
         
         # Get squad context
         squad_res = supabase.table("squads").select("*").eq("id", squad_id).execute()
@@ -135,43 +135,19 @@ def send_squad_message(squad_id: str, msg: MessageCreate, user = Depends(get_cur
         try:
             # Shared configuration enabling the Google Search tool
             config = types.GenerateContentConfig(
-                system_instruction="You are an AI assistant for a student squad. You MUST use the Google Search tool when answering to provide real-world, up-to-date information.",
+                system_instruction="You are a helpful, expert AI coach embedded in a student squad chat. Answer their queries concisely. You MUST use the Google Search tool when answering to provide real-world, up-to-date information, real examples, or novelty assessments. Be constructive and encouraging.",
                 tools=[{"google_search": {}}]
             )
 
-            if command.startswith("search"):
-                prompt = f"Use Google Search to find 2-3 real, upcoming hackathons, startup competitions, or open-source bounties relevant to a student squad focusing on {squad.get('focus_area')}. Provide names, descriptions, and direct URLs."
-                response = client.models.generate_content(
-                    model=model_id,
-                    contents=prompt,
-                    config=config
-                )
-                ai_response_text = response.text
-                
-            elif command.startswith("validate"):
-                idea = command[len("validate"):].strip()
-                if not idea:
-                    ai_response_text = "Please provide an idea to validate. Example: `@ai validate a platform for sharing class notes`."
-                else:
-                    prompt = f"Use Google Search to validate the following project idea: '{idea}'. Check if similar products exist, identify potential market challenges, and suggest one pivot or improvement based on real-world data."
-                    response = client.models.generate_content(
-                        model=model_id,
-                        contents=prompt,
-                        config=config
-                    )
-                    ai_response_text = response.text
-                    
-            elif command.startswith("generate"):
-                prompt = f"Brainstorm a realistic, industry-relevant project idea tailored to a student squad focusing on {squad.get('focus_area')}. Make it challenging but feasible for a college team."
-                response = client.models.generate_content(
-                    model=model_id,
-                    contents=prompt,
-                    config=config # Even if it doesn't search, the tool is available
-                )
-                ai_response_text = response.text
-                
-            else:
-                ai_response_text = "I didn't quite catch that. Try using one of these commands:\n\n- `@ai search`: Find real hackathons and competitions for this squad.\n- `@ai validate [your idea]`: Validate a project idea against the real market.\n- `@ai generate`: Generate a new project idea for the squad."
+            # Give the AI the squad context and their exact prompt
+            prompt = f"Squad Focus Area: {squad.get('focus_area')}\nUser request: {user_prompt}"
+            
+            response = client.models.generate_content(
+                model=model_id,
+                contents=prompt,
+                config=config
+            )
+            ai_response_text = response.text
                 
         except Exception as e:
             ai_response_text = f"An error occurred while calling my brain: {str(e)}"

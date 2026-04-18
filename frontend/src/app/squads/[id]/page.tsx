@@ -245,9 +245,7 @@ export default function SquadDetailPage() {
                   <Users className="w-4 h-4" /> Squad Chat
                 </div>
                 <div className="text-xs text-muted-foreground flex gap-3">
-                  <span className="font-medium text-primary">@ai search</span>
-                  <span className="font-medium text-primary">@ai validate [idea]</span>
-                  <span className="font-medium text-primary">@ai generate</span>
+                  <span className="font-medium text-primary">/ai [ask anything]</span>
                 </div>
               </div>
               
@@ -283,7 +281,7 @@ export default function SquadDetailPage() {
               <div className="p-4 border-t border-border bg-card">
                 <form onSubmit={handleSendMessage} className="flex gap-2">
                   <Input 
-                    placeholder="Type a message or use @ai..." 
+                    placeholder="Type a message or use /ai..." 
                     className="flex-1 bg-muted border-border"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}

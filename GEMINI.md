@@ -14,7 +14,7 @@ Build a full-stack web application called **"Squad Navigator"** — a platform t
 - **Backend:** FastAPI (Python 3.11+)
 - **Database:** PostgreSQL via **Supabase free tier** (use `supabase-py` on backend, Supabase JS client on frontend for auth)
 - **Containerization:** Docker + Docker Compose (one command: `docker compose up`)
-- **AI:** Google Gemini API (`gemini-2.0-flash` model) via `google-generativeai` Python SDK for squad challenge generation
+- **AI:** Google Gemini API (`gemini-3-flash-preview` model) via `google-generativeai` Python SDK for squad challenge generation
 - **Design Libraries:** `shadcn/ui` + `Tailwind CSS` + `Framer Motion` for animations + `Lucide React` for icons
 - **Auth:** Supabase Auth (email/password + magic link)
 
@@ -214,7 +214,7 @@ All protected routes require `Authorization: Bearer <supabase_jwt>`. Validate us
 
 ## AI CHALLENGE GENERATION (Core Feature)
 
-**Model:** `gemini-2.0-flash` via the `google-generativeai` Python SDK.
+**Model:** `gemini-3-flash-preview` via the `google-generativeai` Python SDK.
 
 **Install:** `pip install google-generativeai`
 
@@ -224,7 +224,7 @@ import google.generativeai as genai
 import os
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-model = genai.GenerativeModel("gemini-2.0-flash")
+model = genai.GenerativeModel("gemini-3-flash-preview")
 ```
 
 **Endpoint:** `POST /api/challenges/generate`
