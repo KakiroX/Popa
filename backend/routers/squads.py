@@ -136,26 +136,44 @@ def send_squad_message(squad_id: str, msg: MessageCreate, user = Depends(get_cur
     if content_strip.lower().startswith("/ai"):
         user_prompt = content_strip[3:].strip()
         
-        # Get squad context
+        # 1. Get Squad Context & Members
         squad_res = supabase.table("squads").select("*").eq("id", squad_id).execute()
         if not squad_res.data:
             raise HTTPException(status_code=404, detail="Squad not found")
         squad = squad_res.data[0]
         
+        members_res = supabase.table("squad_members").select("role_in_squad").eq("squad_id", squad_id).execute()
+        roles = [m['role_in_squad'] for m in members_res.data]
+        
+        # 2. Get Active Challenge (Situational Awareness)
+        challenge_res = supabase.table("challenges").select("title, description").eq("squad_id", squad_id).eq("status", "active").limit(1).execute()
+        active_challenge = challenge_res.data[0] if challenge_res.data else None
+        
+        # 3. Get Lean Chat History (Last 8 messages for flow, without bloating tokens)
+        history_res = supabase.table("squad_messages").select("content, is_ai").eq("squad_id", squad_id).order("created_at", desc=True).limit(8).execute()
+        history = reversed(history_res.data) # Back to chronological
+        history_text = "\n".join([f"{'Coach' if m['is_ai'] else 'User'}: {m['content']}" for m in history])
+
         ai_response_text = ""
         try:
-            # Shared configuration enabling the Google Search tool
             config = types.GenerateContentConfig(
-                system_instruction="You are a helpful, expert AI coach embedded in a student squad chat. Answer their queries concisely. You MUST use the Google Search tool when answering to provide real-world, up-to-date information, real examples, or novelty assessments. Be constructive and encouraging.",
+                system_instruction=f"""You are the Squad AI Coach. 
+Context:
+- Squad Focus: {squad.get('focus_area')}
+- Team Roles: {', '.join(roles)}
+- Active Project: {active_challenge['title'] if active_challenge else 'None yet'}
+{f'- Project Goal: {active_challenge["description"][:200]}...' if active_challenge else ''}
+
+Recent Conversation:
+{history_text}
+
+Task: Answer the user's request concisely. Use Google Search for real-world data/trends. Stay in character as a helpful project mentor.""",
                 tools=[{"google_search": {}}]
             )
 
-            # Give the AI the squad context and their exact prompt
-            prompt = f"Squad Focus Area: {squad.get('focus_area')}\nUser request: {user_prompt}"
-            
             response = client.models.generate_content(
                 model=model_id,
-                contents=prompt,
+                contents=user_prompt,
                 config=config
             )
             ai_response_text = response.text
