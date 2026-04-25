@@ -42,8 +42,7 @@ Be brief. Use Google Search for external trends/ops only if needed."""
 
     try:
         config = types.GenerateContentConfig(
-            system_instruction=system_instruction,
-            tools=[{"google_search": {}}]
+            system_instruction=system_instruction
         )
         ai_response = client.models.generate_content(
             model=model_id,
@@ -71,8 +70,7 @@ def get_career_advice(user = Depends(get_current_user)):
 
     try:
         config = types.GenerateContentConfig(
-            system_instruction="You are a concise career advisor. Use Google Search. MAX 100 words total.",
-            tools=[{"google_search": {}}]
+            system_instruction="You are a concise career advisor. MAX 100 words total."
         )
         ai_response = client.models.generate_content(
             model=model_id,
