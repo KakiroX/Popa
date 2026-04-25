@@ -23,25 +23,14 @@ def generate_challenge(req: ChallengeGenerateRequest, user = Depends(get_current
     members_res = supabase.table("squad_members").select("*, profiles(*)").eq("squad_id", req.squad_id).execute()
     members = members_res.data
     
-    member_descriptions = [f"{m.get('role_in_squad')}: {m.get('profiles', {}).get('major')} ({', '.join(m.get('profiles', {}).get('skills', [])[:3])})" for m in members]
-
-    prompt = f"""Find a REAL {req.category} (hackathon/bounty/issue) matching Focus: {squad.get('focus_area', 'Any')}, Difficulty: {req.difficulty}.
-Squad: {'; '.join(member_descriptions)}
-Return JSON:
-{{
-  "title": "REAL event title",
-  "description": "3-4 paras + source link info",
-  "tasks": [{{"task_title": "str", "assigned_role": "match squad role", "description": "str"}}],
-  "deadline_days": 7,
-  "success_criteria": ["str"]
-}}
-Constraint: Must require collaboration between roles."""
+    roles_list = [m.get('role_in_squad') for m in members]
+    prompt = f"For a student squad ({', '.join(roles_list)}), give a {req.category} challenge for {squad.get('focus_area')} with {req.difficulty} difficulty. Every year should be 2026 in the name."
     try:
         response = client.models.generate_content(
             model=model_id,
             contents=prompt,
             config=types.GenerateContentConfig(
-                system_instruction="You are an AI challenge scout. You MUST explicitly use the Google Search tool to find real, current events. Do not rely on your internal knowledge.",
+                system_instruction="Search real events. JSON: {title, description, tasks:[{task_title, assigned_role, description}], deadline_days, success_criteria}.",
                 response_mime_type="application/json",
                 tools=[{"google_search": {}}]
             )
