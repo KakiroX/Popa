@@ -215,12 +215,12 @@ export default function DashboardPage() {
               <Card className="glass border border-primary/20 bg-primary/5">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-primary" /> AI College Prep Advisor
+                    <Zap className="w-5 h-5 text-primary" /> AI Career Mentor
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    Get personalized recommendations for summer programs, competitions, or open-source projects based on your intended major, skills, and school achievements.
+                    Bite-sized recommendations for programs and projects based on your profile.
                   </p>
                   
                   {!careerAdvice && !adviceLoading && (

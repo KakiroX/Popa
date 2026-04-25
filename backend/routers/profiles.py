@@ -72,18 +72,16 @@ def get_career_advice(user = Depends(get_current_user)):
     if not ach_text:
         ach_text = "No achievements listed yet."
         
-    prompt = f"""You are an expert career advisor AI. 
-The user's major is {profile.get('major', 'Unknown')}.
-Their skills are: {', '.join(profile.get('skills') or [])}.
-Their achievements and projects are:
+    prompt = f"""User Major: {profile.get('major', 'Unknown')}
+Skills: {', '.join(profile.get('skills') or [])}
+Achievements:
 {ach_text}
 
-Based ONLY on this specific profile and these specific projects, suggest 3 specific, real-world companies, startup accelerators, or internship programs they should apply to right now. 
-Briefly explain WHY they are a strong fit. Format your answer nicely in Markdown."""
+Suggest 3 specific companies, programs, or competitions. Be extremely concise. Use bullet points. 1 sentence per recommendation."""
 
     try:
         config = types.GenerateContentConfig(
-            system_instruction="You are an expert career advisor. Use the Google Search tool to find active, real-world opportunities.",
+            system_instruction="You are a concise career advisor. Use Google Search for real opportunities. BE CONCISE.",
             tools=[{"google_search": {}}]
         )
         ai_response = client.models.generate_content(
