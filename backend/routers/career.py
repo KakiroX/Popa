@@ -12,6 +12,10 @@ router = APIRouter()
 client = genai.Client(api_key=GEMINI_API_KEY)
 model_id = GEMINI_MODEL
 
+@router.get("/health")
+def assistant_health():
+    return {"status": "assistant router ok"}
+
 @router.post("/career-pick", response_model=CareerPickResponse)
 def pick_career(req: CareerPickRequest, user = Depends(get_current_user)):
     # 1. Fetch Profile
@@ -60,7 +64,7 @@ def pick_career(req: CareerPickRequest, user = Depends(get_current_user)):
         raise HTTPException(status_code=500, detail=f"AI Career Pick error: {str(e)}")
 
 @router.post("/roadmap")
-def generate_roadmap(req: RoadmapGenerateRequest, user = Depends(get_current_user)):
+async def generate_roadmap(req: RoadmapGenerateRequest, user = Depends(get_current_user)):
     # 1. Fetch Profile
     prof_res = supabase.table("profiles").select("*").eq("id", user.id).execute()
     if not prof_res.data:
