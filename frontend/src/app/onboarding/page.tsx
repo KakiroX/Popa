@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -11,14 +11,13 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Check, ChevronRight, ChevronLeft, Loader2, Compass, Sparkles } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 
 const ROLES = ['Developer', 'Designer', 'Marketer', 'Business Analyst', 'Finance', 'Legal', 'Content Creator', 'Data Scientist'];
 
-export default function OnboardingPage() {
+function OnboardingContent() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -80,7 +79,7 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
+    <div className="w-full flex flex-col items-center justify-center">
       <div className="w-full max-w-2xl mb-8 flex justify-between items-center px-4">
         {[1, 2, 3, 4].map(s => (
           <div key={s} className="flex items-center">
@@ -284,6 +283,16 @@ export default function OnboardingPage() {
           )}
         </CardFooter>
       </Card>
+    </div>
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
+      <Suspense fallback={<Loader2 className="w-10 h-10 animate-spin text-primary" />}>
+        <OnboardingContent />
+      </Suspense>
     </div>
   );
 }

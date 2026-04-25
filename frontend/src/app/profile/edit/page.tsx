@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -23,7 +23,7 @@ const ACHIEVEMENT_TYPES = [
   { value: 'project', label: 'Project', icon: Briefcase },
 ];
 
-export default function EditProfilePage() {
+function EditProfileContent() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const router = useRouter();
@@ -118,214 +118,227 @@ export default function EditProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center py-20">
         <Loader2 className="w-10 h-10 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-3xl mx-auto space-y-8">
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" onClick={() => router.back()} className="hover:bg-muted">
-            <ChevronLeft className="w-4 h-4 mr-2" /> Back
-          </Button>
-          <h1 className="text-3xl font-bold tracking-tight">Edit Profile</h1>
-          <Button onClick={handleSave} className="btn-primary" disabled={saving}>
-            {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-            Save Changes
-          </Button>
-        </div>
+    <div className="max-w-3xl mx-auto space-y-8">
+      <div className="flex items-center justify-between">
+        <Button variant="ghost" onClick={() => router.back()} className="hover:bg-muted">
+          <ChevronLeft className="w-4 h-4 mr-2" /> Back
+        </Button>
+        <h1 className="text-3xl font-bold tracking-tight">Edit Profile</h1>
+        <Button onClick={handleSave} className="btn-primary" disabled={saving}>
+          {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+          Save Changes
+        </Button>
+      </div>
 
-        <div className="grid grid-cols-1 gap-8">
-          {/* Basic Info */}
-          <Card className="glass border-none">
-            <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
-              <CardDescription>Your school and academic details.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+      <div className="grid grid-cols-1 gap-8">
+        {/* Basic Info */}
+        <Card className="glass border-none">
+          <CardHeader>
+            <CardTitle>Basic Information</CardTitle>
+            <CardDescription>Your school and academic details.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Full Name</Label>
+              <Input 
+                value={profile.full_name || ''}
+                onChange={(e) => setProfile({...profile, full_name: e.target.value})}
+                className="bg-muted border-border"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Current School</Label>
+              <Input 
+                value={profile.university || ''}
+                onChange={(e) => setProfile({...profile, university: e.target.value})}
+                className="bg-muted border-border"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Full Name</Label>
+                <Label>Intended Career / Major</Label>
                 <Input 
-                  value={profile.full_name || ''}
-                  onChange={(e) => setProfile({...profile, full_name: e.target.value})}
+                  value={profile.major || ''}
+                  onChange={(e) => setProfile({...profile, major: e.target.value})}
                   className="bg-muted border-border"
                 />
+                <Link href="/major-explorer?returnTo=/profile/edit">
+                  <Button variant="link" className="text-[10px] h-auto p-0 text-primary flex items-center gap-1 opacity-70 hover:opacity-100">
+                    <Sparkles className="w-3 h-3" /> Find your path with AI Picker
+                  </Button>
+                </Link>
               </div>
               <div className="space-y-2">
-                <Label>Current School</Label>
-                <Input 
-                  value={profile.university || ''}
-                  onChange={(e) => setProfile({...profile, university: e.target.value})}
-                  className="bg-muted border-border"
-                />
+                <Label>Grade Level</Label>
+                <Select 
+                  value={profile.year_of_study?.toString() || '9'}
+                  onValueChange={(val) => setProfile({...profile, year_of_study: parseInt(val || '9')})}
+                >
+                  <SelectTrigger className="bg-muted border-border">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[9, 10, 11, 12].map(y => (
+                      <SelectItem key={y} value={y.toString()}>{y}th Grade</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Intended Career / Major</Label>
-                  <Input 
-                    value={profile.major || ''}
-                    onChange={(e) => setProfile({...profile, major: e.target.value})}
-                    className="bg-muted border-border"
-                  />
-                  <Link href="/major-explorer?returnTo=/profile/edit">
-                    <Button variant="link" className="text-[10px] h-auto p-0 text-primary flex items-center gap-1 opacity-70 hover:opacity-100">
-                      <Sparkles className="w-3 h-3" /> Find your path with AI Picker
-                    </Button>
-                  </Link>
+            </div>
+            <div className="space-y-2">
+              <Label>Bio</Label>
+              <Textarea 
+                value={profile.bio || ''}
+                onChange={(e) => setProfile({...profile, bio: e.target.value})}
+                className="bg-muted border-border resize-none h-24"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Roles & Skills */}
+        <Card className="glass border-none">
+          <CardHeader>
+            <CardTitle>Roles & Skills</CardTitle>
+            <CardDescription>Update what you bring to a squad.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-4">
+              <Label>Roles</Label>
+              <div className="flex flex-wrap gap-2">
+                {ROLES.map(role => (
+                  <Badge 
+                    key={role} 
+                    variant={(profile.role_tags || []).includes(role) ? "default" : "outline"}
+                    className={`cursor-pointer px-3 py-1.5 transition-all ${(profile.role_tags || []).includes(role) ? 'bg-primary text-primary-foreground' : 'hover:border-primary border-border'}`}
+                    onClick={() => toggleRole(role)}
+                  >
+                    {role}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Skills (comma separated)</Label>
+              <Input 
+                value={skillsInput}
+                onChange={(e) => setSkillsInput(e.target.value)}
+                className="bg-muted border-border"
+                placeholder="React, Python, Public Speaking"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Achievements */}
+        <Card className="glass border-none">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Achievements</CardTitle>
+              <CardDescription>Highlight your wins.</CardDescription>
+            </div>
+            <Button size="sm" variant="outline" onClick={() => setShowAchForm(true)} className="border-border">
+              <Plus className="w-4 h-4 mr-1" /> Add
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {showAchForm && (
+              <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 space-y-4 mb-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Title</Label>
+                    <Input 
+                      value={newAchievement.title}
+                      onChange={(e) => setNewAchievement({...newAchievement, title: e.target.value})}
+                      placeholder="Hackathon Winner"
+                      className="bg-background border-border"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Date</Label>
+                    <Input 
+                      value={newAchievement.date}
+                      onChange={(e) => setNewAchievement({...newAchievement, date: e.target.value})}
+                      placeholder="June 2025"
+                      className="bg-background border-border"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Grade Level</Label>
+                  <Label>Type</Label>
                   <Select 
-                    value={profile.year_of_study?.toString() || '9'}
-                    onValueChange={(val) => setProfile({...profile, year_of_study: parseInt(val || '9')})}
+                    value={newAchievement.type}
+                    onValueChange={(val: any) => setNewAchievement({...newAchievement, type: val})}
                   >
-                    <SelectTrigger className="bg-muted border-border">
+                    <SelectTrigger className="bg-background border-border">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {[9, 10, 11, 12].map(y => (
-                        <SelectItem key={y} value={y.toString()}>{y}th Grade</SelectItem>
+                      {ACHIEVEMENT_TYPES.map(t => (
+                        <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Bio</Label>
-                <Textarea 
-                  value={profile.bio || ''}
-                  onChange={(e) => setProfile({...profile, bio: e.target.value})}
-                  className="bg-muted border-border resize-none h-24"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Roles & Skills */}
-          <Card className="glass border-none">
-            <CardHeader>
-              <CardTitle>Roles & Skills</CardTitle>
-              <CardDescription>Update what you bring to a squad.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <Label>Roles</Label>
-                <div className="flex flex-wrap gap-2">
-                  {ROLES.map(role => (
-                    <Badge 
-                      key={role} 
-                      variant={(profile.role_tags || []).includes(role) ? "default" : "outline"}
-                      className={`cursor-pointer px-3 py-1.5 transition-all ${(profile.role_tags || []).includes(role) ? 'bg-primary text-primary-foreground' : 'hover:border-primary border-border'}`}
-                      onClick={() => toggleRole(role)}
-                    >
-                      {role}
-                    </Badge>
-                  ))}
+                <div className="space-y-2">
+                  <Label>Description</Label>
+                  <Textarea 
+                    value={newAchievement.description}
+                    onChange={(e) => setNewAchievement({...newAchievement, description: e.target.value})}
+                    placeholder="Briefly describe what you did..."
+                    className="bg-background border-border resize-none h-20"
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button size="sm" variant="ghost" onClick={() => setShowAchForm(false)}>Cancel</Button>
+                  <Button size="sm" onClick={addAchievement}>Add Achievement</Button>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>Skills (comma separated)</Label>
-                <Input 
-                  value={skillsInput}
-                  onChange={(e) => setSkillsInput(e.target.value)}
-                  className="bg-muted border-border"
-                  placeholder="React, Python, Public Speaking"
-                />
-              </div>
-            </CardContent>
-          </Card>
+            )}
 
-          {/* Achievements */}
-          <Card className="glass border-none">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>Achievements</CardTitle>
-                <CardDescription>Highlight your wins.</CardDescription>
-              </div>
-              <Button size="sm" variant="outline" onClick={() => setShowAchForm(true)} className="border-border">
-                <Plus className="w-4 h-4 mr-1" /> Add
-              </Button>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {showAchForm && (
-                <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 space-y-4 mb-6">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Title</Label>
-                      <Input 
-                        value={newAchievement.title}
-                        onChange={(e) => setNewAchievement({...newAchievement, title: e.target.value})}
-                        placeholder="Hackathon Winner"
-                        className="bg-background border-border"
-                      />
+            <div className="space-y-3">
+              {(profile.achievements || []).map((ach, i) => (
+                <div key={i} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-white/5">
+                  <div className="flex items-center gap-3">
+                    <div className="text-primary">
+                      {ACHIEVEMENT_TYPES.find(t => t.value === ach.type)?.icon({ className: "w-4 h-4" } as any)}
                     </div>
-                    <div className="space-y-2">
-                      <Label>Date</Label>
-                      <Input 
-                        value={newAchievement.date}
-                        onChange={(e) => setNewAchievement({...newAchievement, date: e.target.value})}
-                        placeholder="June 2025"
-                        className="bg-background border-border"
-                      />
+                    <div>
+                      <p className="font-bold text-sm">{ach.title}</p>
+                      <p className="text-xs text-muted-foreground">{ach.date}</p>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Type</Label>
-                    <Select 
-                      value={newAchievement.type}
-                      onValueChange={(val: any) => setNewAchievement({...newAchievement, type: val})}
-                    >
-                      <SelectTrigger className="bg-background border-border">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {ACHIEVEMENT_TYPES.map(t => (
-                          <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Description</Label>
-                    <Textarea 
-                      value={newAchievement.description}
-                      onChange={(e) => setNewAchievement({...newAchievement, description: e.target.value})}
-                      placeholder="Briefly describe what you did..."
-                      className="bg-background border-border resize-none h-20"
-                    />
-                  </div>
-                  <div className="flex justify-end gap-2">
-                    <Button size="sm" variant="ghost" onClick={() => setShowAchForm(false)}>Cancel</Button>
-                    <Button size="sm" onClick={addAchievement}>Add Achievement</Button>
-                  </div>
+                  <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => removeAchievement(i)}>
+                    <X className="w-4 h-4" />
+                  </Button>
                 </div>
-              )}
-
-              <div className="space-y-3">
-                {(profile.achievements || []).map((ach, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-white/5">
-                    <div className="flex items-center gap-3">
-                      <div className="text-primary">
-                        {ACHIEVEMENT_TYPES.find(t => t.value === ach.type)?.icon({ className: "w-4 h-4" } as any)}
-                      </div>
-                      <div>
-                        <p className="font-bold text-sm">{ach.title}</p>
-                        <p className="text-xs text-muted-foreground">{ach.date}</p>
-                      </div>
-                    </div>
-                    <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => removeAchievement(i)}>
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
+    </div>
+  );
+}
+
+export default function EditProfilePage() {
+  return (
+    <div className="min-h-screen bg-background p-4 md:p-8">
+      <Suspense fallback={
+        <div className="flex flex-col items-center justify-center py-20">
+          <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
+          <p className="text-muted-foreground">Loading Profile...</p>
+        </div>
+      }>
+        <EditProfileContent />
+      </Suspense>
     </div>
   );
 }
