@@ -10,7 +10,7 @@ from models.schemas import ChallengeGenerateRequest, ChallengeSubmission
 router = APIRouter()
 
 client = genai.Client(api_key=GEMINI_API_KEY)
-model_id = "gemini-1.5-flash"
+model_id = "gemini-3-flash-preview"
 
 @router.post("/generate")
 def generate_challenge(req: ChallengeGenerateRequest, user = Depends(get_current_user)):
