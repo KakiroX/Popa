@@ -10,6 +10,7 @@ export interface Profile {
   skills: string[];
   year_of_study: number;
   looking_for_squad: boolean;
+  squad_id?: string | null;
   created_at: string;
   updated_at: string;
 }

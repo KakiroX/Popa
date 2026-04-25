@@ -75,7 +75,7 @@ export default function DashboardPage() {
           </Avatar>
         </header>
 
-        {profile && !profile.looking_for_squad ? (
+        {profile && profile.squad_id ? (
           <div className="w-full glass rounded-2xl p-8 border border-primary/20 bg-primary/5 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
             <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full hidden pointer-events-none" />
             <div className="space-y-2 z-10 text-center md:text-left">
@@ -87,7 +87,7 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="flex gap-4 z-10 w-full md:w-auto">
-              <Link href="/squads" className="flex-1 md:flex-none">
+              <Link href={`/squads/${profile.squad_id}`} className="flex-1 md:flex-none">
                 <Button className="w-full btn-primary">My Squad</Button>
               </Link>
             </div>

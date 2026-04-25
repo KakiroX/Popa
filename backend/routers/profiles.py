@@ -98,7 +98,16 @@ def get_my_profile(user = Depends(get_current_user)):
     response = supabase.table("profiles").select("*").eq("id", user.id).execute()
     if not response.data:
         raise HTTPException(status_code=404, detail="Profile not found")
-    return response.data[0]
+    profile = response.data[0]
+    
+    # Check for squad membership
+    squad_member_res = supabase.table("squad_members").select("squad_id").eq("user_id", user.id).execute()
+    if squad_member_res.data:
+        profile["squad_id"] = squad_member_res.data[0]["squad_id"]
+    else:
+        profile["squad_id"] = None
+        
+    return profile
 
 @router.put("/me")
 def update_my_profile(profile: ProfileUpdate, user = Depends(get_current_user)):

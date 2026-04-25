@@ -45,6 +45,9 @@ def create_squad(squad: SquadCreate, user = Depends(get_current_user)):
     }
     supabase.table("squad_members").insert(member_data).execute()
     
+    # Update profile to not looking for squad
+    supabase.table("profiles").update({"looking_for_squad": False}).eq("id", user.id).execute()
+    
     return new_squad
 
 @router.get("/match")
@@ -101,6 +104,10 @@ def join_squad(squad_id: str, role_in_squad: str, user = Depends(get_current_use
         "role_in_squad": role_in_squad
     }
     response = supabase.table("squad_members").insert(member_data).execute()
+    
+    # Update profile to not looking for squad
+    supabase.table("profiles").update({"looking_for_squad": False}).eq("id", user.id).execute()
+    
     return response.data[0]
 @router.get("/{squad_id}/challenges")
 def get_squad_challenges(squad_id: str):
