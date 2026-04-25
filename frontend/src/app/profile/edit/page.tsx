@@ -138,7 +138,7 @@ export default function EditProfilePage() {
               <div className="space-y-2">
                 <Label>Full Name</Label>
                 <Input 
-                  value={profile.full_name}
+                  value={profile.full_name || ''}
                   onChange={(e) => setProfile({...profile, full_name: e.target.value})}
                   className="bg-muted border-border"
                 />
@@ -146,7 +146,7 @@ export default function EditProfilePage() {
               <div className="space-y-2">
                 <Label>Current School</Label>
                 <Input 
-                  value={profile.university}
+                  value={profile.university || ''}
                   onChange={(e) => setProfile({...profile, university: e.target.value})}
                   className="bg-muted border-border"
                 />
@@ -155,7 +155,7 @@ export default function EditProfilePage() {
                 <div className="space-y-2">
                   <Label>Intended Major</Label>
                   <Input 
-                    value={profile.major}
+                    value={profile.major || ''}
                     onChange={(e) => setProfile({...profile, major: e.target.value})}
                     className="bg-muted border-border"
                   />
@@ -163,7 +163,7 @@ export default function EditProfilePage() {
                 <div className="space-y-2">
                   <Label>Grade Level</Label>
                   <Select 
-                    value={profile.year_of_study?.toString()}
+                    value={profile.year_of_study?.toString() || '9'}
                     onValueChange={(val) => setProfile({...profile, year_of_study: parseInt(val)})}
                   >
                     <SelectTrigger className="bg-muted border-border">
