@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Check, ChevronLeft, Loader2, Save, X, Plus, Trophy, Heart, Briefcase, Compass, Sparkles } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
@@ -27,6 +28,7 @@ export default function EditProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [profile, setProfile] = useState<Partial<Profile>>({
     full_name: '',
@@ -64,6 +66,15 @@ export default function EditProfilePage() {
     }
     fetchProfile();
   }, [router]);
+
+  // Handle pre-filled major from URL
+  useEffect(() => {
+    const major = searchParams.get('major');
+    if (major) {
+      setProfile(prev => ({ ...prev, major }));
+      toast.info(`AI suggested major applied: ${major}`);
+    }
+  }, [searchParams]);
 
   const handleSave = async () => {
     try {
@@ -160,7 +171,7 @@ export default function EditProfilePage() {
                     onChange={(e) => setProfile({...profile, major: e.target.value})}
                     className="bg-muted border-border"
                   />
-                  <Link href="/major-explorer">
+                  <Link href="/major-explorer?returnTo=/profile/edit">
                     <Button variant="link" className="text-[10px] h-auto p-0 text-primary flex items-center gap-1 opacity-70 hover:opacity-100">
                       <Sparkles className="w-3 h-3" /> Find your path with AI Picker
                     </Button>

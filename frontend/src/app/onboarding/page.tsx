@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Check, ChevronRight, ChevronLeft, Loader2, Compass, Sparkles } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
@@ -21,6 +22,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [formData, setFormData] = useState({
     full_name: '',
@@ -32,6 +34,15 @@ export default function OnboardingPage() {
     looking_for_squad: true,
     focus_interest: 'Any'
   });
+
+  // Handle pre-filled major from URL
+  useEffect(() => {
+    const major = searchParams.get('major');
+    if (major) {
+      setFormData(prev => ({ ...prev, major }));
+      toast.info(`AI suggested major applied: ${major}`);
+    }
+  }, [searchParams]);
 
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [achievements, setAchievements] = useState<any[]>([]);
@@ -126,7 +137,7 @@ export default function OnboardingPage() {
                         value={formData.major}
                         onChange={(e) => setFormData({...formData, major: e.target.value})}
                       />
-                      <Link href="/major-explorer">
+                      <Link href="/major-explorer?returnTo=/onboarding">
                         <Button variant="link" className="text-[10px] h-auto p-0 text-primary flex items-center gap-1 opacity-70 hover:opacity-100">
                           <Sparkles className="w-3 h-3" /> Find your path with AI Picker
                         </Button>

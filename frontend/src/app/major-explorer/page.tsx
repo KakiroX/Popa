@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   Search
 } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
@@ -29,6 +30,10 @@ import { toast } from 'sonner';
 type Step = 'intro' | 'questions' | 'results' | 'roadmap';
 
 export default function CareerExplorerPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get('returnTo') || '/onboarding';
+  
   const [step, setStep] = useState<Step>('intro');
   const [loading, setLoading] = useState(false);
   
@@ -63,9 +68,8 @@ export default function CareerExplorerPage() {
   };
 
   const handleSelectRole = (role: any) => {
-    setSubjects(role.title);
-    setStep('questions');
-    toast.success(`Selected ${role.title}! You can now refine your details.`);
+    toast.success(`Selected ${role.title}! Returning to profile setup...`);
+    router.push(`${returnTo}?major=${encodeURIComponent(role.title)}`);
   };
 
   return (
