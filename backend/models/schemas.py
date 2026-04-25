@@ -74,6 +74,9 @@ class ChallengeSubmission(BaseModel):
 class MessageCreate(BaseModel):
     content: str
 
+class ChatRequest(BaseModel):
+    content: str
+
 class MessageResponse(BaseModel):
     id: str
     squad_id: str

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from database import supabase
 from dependencies import get_current_user
-from models.schemas import ProfileUpdate, ProfileResponse
+from models.schemas import ProfileUpdate, ProfileResponse, ChatRequest
 from google import genai
 from google.genai import types
 from config import GEMINI_API_KEY
@@ -9,6 +9,51 @@ from config import GEMINI_API_KEY
 router = APIRouter()
 client = genai.Client(api_key=GEMINI_API_KEY)
 model_id = "gemini-3-flash-preview"
+
+@router.post("/chat")
+def chat_with_helper(req: ChatRequest, user = Depends(get_current_user)):
+    response = supabase.table("profiles").select("*").eq("id", user.id).execute()
+    if not response.data:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    profile = response.data[0]
+    
+    achievements = profile.get("achievements") or []
+    ach_text = ""
+    for idx, ach in enumerate(achievements):
+        ach_text += f"- {ach.get('title')} ({ach.get('type')}): {ach.get('description')} (Date: {ach.get('date')})\n"
+        
+    if not ach_text:
+        ach_text = "No achievements listed yet."
+        
+    system_instruction = f"""You are 'Squadie', a personal university AI helper. 
+Your goal is to help the student navigate their university life and career by leveraging their specific achievements and skills.
+
+Student Profile:
+- Name: {profile.get('full_name', 'Student')}
+- Major: {profile.get('major', 'Unknown')}
+- University: {profile.get('university', 'Unknown')}
+- Skills: {', '.join(profile.get('skills') or [])}
+- Year of Study: {profile.get('year_of_study', 'Unknown')}
+
+Achievements & Projects:
+{ach_text}
+
+When the student asks a question, always consider how their existing achievements can help them or how they can build upon them. 
+Be encouraging, professional, and specific. Use the Google Search tool if they ask about external opportunities, competitions, or latest industry trends relevant to their major."""
+
+    try:
+        config = types.GenerateContentConfig(
+            system_instruction=system_instruction,
+            tools=[{"google_search": {}}]
+        )
+        ai_response = client.models.generate_content(
+            model=model_id,
+            contents=req.content,
+            config=config
+        )
+        return {"response": ai_response.text}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI Assistant error: {str(e)}")
 
 @router.get("/me/career-advice")
 def get_career_advice(user = Depends(get_current_user)):
