@@ -29,7 +29,9 @@ def generate_challenge(req: ChallengeGenerateRequest, user = Depends(get_current
         prof = m.get("profiles", {})
         role = m.get("role_in_squad", "Member")
         roles.append(role)
-        member_descriptions.append(f"Role: {role}, Major: {prof.get('major', 'Unknown')}, Skills: {', '.join(prof.get('skills', []))}")
+        skills = prof.get('skills', [])
+        skills_text = ", ".join(skills[:5]) # Limit to top 5 skills
+        member_descriptions.append(f"Role: {role}, Major: {prof.get('major', 'Unknown')}, Skills: {skills_text}")
 
     prompt = f"""You are an AI challenge scout for a student squad. DO NOT invent a fictional challenge. 
 Instead, SEARCH THE INTERNET for a REAL, existing hackathon, open-source issue, business case competition, or startup bounty that fits this squad's focus area and skills.

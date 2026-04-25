@@ -19,29 +19,26 @@ def chat_with_helper(req: ChatRequest, user = Depends(get_current_user)):
     
     achievements = profile.get("achievements") or []
     ach_text = ""
-    for idx, ach in enumerate(achievements):
-        ach_text += f"- {ach.get('title')} ({ach.get('type')}): {ach.get('description')} (Date: {ach.get('date')})\n"
+    # Only use top 3 achievements and truncate them to save context
+    for ach in achievements[:3]:
+        title = ach.get('title', 'Project')
+        desc = ach.get('description', '')
+        short_desc = (desc[:60] + '..') if len(desc) > 60 else desc
+        ach_text += f"- {title}: {short_desc}\n"
         
     if not ach_text:
-        ach_text = "No achievements listed yet."
+        ach_text = "No achievements listed."
         
-    system_instruction = f"""You are 'Squadie', a personal university AI helper. 
-Your goal is to help the student navigate their university life and career by leveraging their specific achievements and skills.
+    skills = profile.get('skills') or []
+    skills_text = ", ".join(skills[:8]) # Limit skills
 
-Student Profile:
-- Name: {profile.get('full_name', 'Student')}
-- Major: {profile.get('major', 'Unknown')}
-- University: {profile.get('university', 'Unknown')}
-- Skills: {', '.join(profile.get('skills') or [])}
-- Year of Study: {profile.get('year_of_study', 'Unknown')}
-- Experience Level: {profile.get('experience_level', 'Unknown')}
-- Career Track: {profile.get('preferred_track', 'General')}
+    system_instruction = f"""You are 'Squadie', a concise university AI helper. 
+Help the student using these details:
+Major: {profile.get('major', 'Unknown')}
+Skills: {skills_text}
+Achievements: {ach_text}
 
-Achievements & Projects:
-{ach_text}
-
-When the student asks a question, always consider how their existing achievements and career track goals can help them.
-Be encouraging, professional, and specific. Use the Google Search tool if they ask about external opportunities, competitions, or latest industry trends relevant to their major or target track."""
+Be brief. Use Google Search for external trends/ops only if needed."""
 
     try:
         config = types.GenerateContentConfig(
@@ -66,22 +63,15 @@ def get_career_advice(user = Depends(get_current_user)):
     
     achievements = profile.get("achievements") or []
     ach_text = ""
-    for idx, ach in enumerate(achievements):
-        ach_text += f"{idx+1}. {ach.get('title')} ({ach.get('type')}): {ach.get('description')}\n"
+    # Extremely limited achievements for advice
+    for ach in achievements[:2]:
+        ach_text += f"- {ach.get('title')}\n"
         
-    if not ach_text:
-        ach_text = "No achievements listed yet."
-        
-    prompt = f"""User Major: {profile.get('major', 'Unknown')}
-Skills: {', '.join(profile.get('skills') or [])}
-Achievements:
-{ach_text}
-
-Suggest 3 specific companies, programs, or competitions. Be extremely concise. Use bullet points. 1 sentence per recommendation."""
+    prompt = f"Major: {profile.get('major')}. Skills: {', '.join((profile.get('skills') or [])[:5])}. Achievements: {ach_text}. Suggest 3 real companies/programs. 1 sentence each. BE BRIEF."
 
     try:
         config = types.GenerateContentConfig(
-            system_instruction="You are a concise career advisor. Use Google Search for real opportunities. BE CONCISE.",
+            system_instruction="You are a concise career advisor. Use Google Search. MAX 100 words total.",
             tools=[{"google_search": {}}]
         )
         ai_response = client.models.generate_content(
