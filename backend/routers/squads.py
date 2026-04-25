@@ -5,12 +5,12 @@ from models.schemas import SquadCreate, SquadResponse, MessageCreate
 from typing import Optional, List
 from google import genai
 from google.genai import types
-from config import GEMINI_API_KEY
+from config import GEMINI_API_KEY, GEMINI_MODEL
 
 router = APIRouter()
 
 client = genai.Client(api_key=GEMINI_API_KEY)
-model_id = "gemini-3-flash-preview"
+model_id = GEMINI_MODEL
 
 @router.get("")
 def list_squads(focus_area: Optional[str] = None, open_only: bool = False):

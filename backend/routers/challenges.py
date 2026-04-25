@@ -3,14 +3,14 @@ import json
 from google import genai
 from google.genai import types
 from database import supabase
-from config import GEMINI_API_KEY
+from config import GEMINI_API_KEY, GEMINI_MODEL
 from dependencies import get_current_user
 from models.schemas import ChallengeGenerateRequest, ChallengeSubmission
 
 router = APIRouter()
 
 client = genai.Client(api_key=GEMINI_API_KEY)
-model_id = "gemini-3-flash-preview"
+model_id = GEMINI_MODEL
 
 @router.post("/generate")
 def generate_challenge(req: ChallengeGenerateRequest, user = Depends(get_current_user)):

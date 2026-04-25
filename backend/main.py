@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import profiles, squads, challenges, stats
+from routers import profiles, squads, challenges, stats, jobs, assistant
 
 app = FastAPI(title="Squad Navigator API")
 
@@ -39,6 +39,8 @@ app.include_router(profiles.router, prefix="/api/profiles", tags=["Profiles"])
 app.include_router(squads.router, prefix="/api/squads", tags=["Squads"])
 app.include_router(challenges.router, prefix="/api/challenges", tags=["Challenges"])
 app.include_router(stats.router, prefix="/api/stats", tags=["Stats"])
+app.include_router(jobs.router, prefix="/api/jobs", tags=["Jobs"])
+app.include_router(assistant.router, prefix="/api/assistant", tags=["Assistant"])
 
 @app.get("/api/health")
 def health_check():

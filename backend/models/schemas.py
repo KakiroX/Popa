@@ -19,6 +19,8 @@ class ProfileUpdate(BaseModel):
     skills: List[str]
     year_of_study: int
     looking_for_squad: bool = True
+    experience_level: Optional[str] = None # fresher, junior, mid, senior
+    preferred_track: Optional[str] = None # web_development, data, design, marketing, business
 
 class ProfileResponse(ProfileUpdate):
     id: str
@@ -85,3 +87,56 @@ class MessageResponse(BaseModel):
     content: str
     created_at: datetime
     profiles: Optional[Dict[str, Any]] = None
+
+# --- Career Models ---
+
+class Job(BaseModel):
+    id: str
+    title: str
+    company: str
+    description: str
+    requirements: Optional[str] = None
+    skills_required: List[str]
+    experience_level: str # fresher, junior, mid
+    career_track: str # web_development, data, design, marketing
+    remote: bool = False
+    salary_range: Optional[str] = None
+    posted_at: datetime
+
+class JobMatch(BaseModel):
+    job: Dict[str, Any]
+    match_score: float
+    skill_overlap: float
+    experience_alignment: float
+    track_alignment: float
+    match_explanation: str
+    strengths: List[str]
+    improvement_areas: List[str] = []
+
+class RoadmapStep(BaseModel):
+    title: str
+    description: str
+    resources: List[Dict[str, str]] = [] # {title, url}
+
+class RoadmapGenerateRequest(BaseModel):
+    target_role: str
+    timeframe_months: int = 6
+    learning_hours_per_week: int = 10
+
+class CVAnalyzeRequest(BaseModel):
+    raw_text: str
+
+class CareerRoadmap(BaseModel):
+    id: str
+    user_id: str
+    title: str
+    description: str
+    steps: List[RoadmapStep]
+    created_at: datetime
+
+class LearningResource(BaseModel):
+    id: str
+    title: str
+    url: str
+    type: str # video, course, article
+    skill_tag: str

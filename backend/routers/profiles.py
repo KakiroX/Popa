@@ -4,11 +4,11 @@ from dependencies import get_current_user
 from models.schemas import ProfileUpdate, ProfileResponse, ChatRequest
 from google import genai
 from google.genai import types
-from config import GEMINI_API_KEY
+from config import GEMINI_API_KEY, GEMINI_MODEL
 
 router = APIRouter()
 client = genai.Client(api_key=GEMINI_API_KEY)
-model_id = "gemini-3-flash-preview"
+model_id = GEMINI_MODEL
 
 @router.post("/chat")
 def chat_with_helper(req: ChatRequest, user = Depends(get_current_user)):
@@ -34,12 +34,14 @@ Student Profile:
 - University: {profile.get('university', 'Unknown')}
 - Skills: {', '.join(profile.get('skills') or [])}
 - Year of Study: {profile.get('year_of_study', 'Unknown')}
+- Experience Level: {profile.get('experience_level', 'Unknown')}
+- Career Track: {profile.get('preferred_track', 'General')}
 
 Achievements & Projects:
 {ach_text}
 
-When the student asks a question, always consider how their existing achievements can help them or how they can build upon them. 
-Be encouraging, professional, and specific. Use the Google Search tool if they ask about external opportunities, competitions, or latest industry trends relevant to their major."""
+When the student asks a question, always consider how their existing achievements and career track goals can help them.
+Be encouraging, professional, and specific. Use the Google Search tool if they ask about external opportunities, competitions, or latest industry trends relevant to their major or target track."""
 
     try:
         config = types.GenerateContentConfig(
