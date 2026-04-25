@@ -164,7 +164,7 @@ export default function EditProfilePage() {
                   <Label>Grade Level</Label>
                   <Select 
                     value={profile.year_of_study?.toString() || '9'}
-                    onValueChange={(val) => setProfile({...profile, year_of_study: parseInt(val)})}
+                    onValueChange={(val) => setProfile({...profile, year_of_study: parseInt(val || '9')})}
                   >
                     <SelectTrigger className="bg-muted border-border">
                       <SelectValue />
