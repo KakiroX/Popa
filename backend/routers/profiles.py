@@ -8,8 +8,6 @@ from config import GEMINI_API_KEY, GEMINI_MODEL
 
 router = APIRouter()
 client = genai.Client(api_key=GEMINI_API_KEY)
-model_id = GEMINI_MODEL
-
 @router.post("/chat")
 def chat_with_helper(req: ChatRequest, user = Depends(get_current_user)):
     response = supabase.table("profiles").select("*").eq("id", user.id).execute()
@@ -41,13 +39,13 @@ Achievements: {ach_text}
 Be brief. Use Google Search for external trends/ops only if needed."""
 
     try:
-        config = types.GenerateContentConfig(
+        config_ai = types.GenerateContentConfig(
             system_instruction=system_instruction
         )
         ai_response = client.models.generate_content(
-            model=model_id,
+            model=GEMINI_MODEL,
             contents=req.content,
-            config=config
+            config=config_ai
         )
         return {"response": ai_response.text}
     except Exception as e:
@@ -69,13 +67,13 @@ def get_career_advice(user = Depends(get_current_user)):
     prompt = f"Major: {profile.get('major')}. Skills: {', '.join((profile.get('skills') or [])[:5])}. Achievements: {ach_text}. Suggest 3 real companies/programs. 1 sentence each. BE BRIEF."
 
     try:
-        config = types.GenerateContentConfig(
+        config_ai = types.GenerateContentConfig(
             system_instruction="You are a concise career advisor. MAX 100 words total."
         )
         ai_response = client.models.generate_content(
-            model=model_id,
+            model=GEMINI_MODEL,
             contents=prompt,
-            config=config
+            config=config_ai
         )
         return {"advice": ai_response.text}
     except Exception as e:
