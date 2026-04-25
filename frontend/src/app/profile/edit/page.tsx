@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { Check, ChevronLeft, Loader2, Save, X, Plus, Trophy, Heart, Briefcase, Compass } from 'lucide-react';
+import { Check, ChevronLeft, Loader2, Save, X, Plus, Trophy, Heart, Briefcase, Compass, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/lib/api';

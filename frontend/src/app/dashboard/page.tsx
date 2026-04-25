@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Users, Trophy, ChevronRight, Zap, Loader2 } from 'lucide-react';
+import { Calendar, Users, Trophy, ChevronRight, Zap, Loader2, Compass, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Profile, Squad } from '@/types';
