@@ -10,7 +10,7 @@ from config import GEMINI_API_KEY
 router = APIRouter()
 
 client = genai.Client(api_key=GEMINI_API_KEY)
-model_id = "gemini-3-flash-preview"
+model_id = "gemini-1.5-flash"
 
 @router.get("")
 def list_squads(focus_area: Optional[str] = None, open_only: bool = False):

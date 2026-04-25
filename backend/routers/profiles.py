@@ -8,7 +8,7 @@ from config import GEMINI_API_KEY
 
 router = APIRouter()
 client = genai.Client(api_key=GEMINI_API_KEY)
-model_id = "gemini-3-flash-preview"
+model_id = "gemini-1.5-flash"
 
 @router.post("/chat")
 def chat_with_helper(req: ChatRequest, user = Depends(get_current_user)):
