@@ -39,10 +39,6 @@ export default function CareerExplorerPage() {
 
   // Results State
   const [options, setOptions] = useState<any[]>([]);
-  const [selectedRole, setSelectedRole] = useState<any>(null);
-
-  // Roadmap State
-  const [roadmap, setRoadmap] = useState<any>(null);
 
   const handlePickCareer = async () => {
     if (!passions || !subjects || !impact) {
@@ -66,23 +62,10 @@ export default function CareerExplorerPage() {
     }
   };
 
-  const handleSelectRole = async (role: any) => {
-    setSelectedRole(role);
-    setLoading(true);
-    try {
-      const res = await api.assistant.generateRoadmap({
-        target_role: role.title,
-        timeframe_months: 6,
-        learning_hours_per_week: 10
-      });
-      setRoadmap(res);
-      setStep('roadmap');
-      toast.success('Your personalized roadmap is ready!');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to generate roadmap');
-    } finally {
-      setLoading(false);
-    }
+  const handleSelectRole = (role: any) => {
+    setSubjects(role.title);
+    setStep('questions');
+    toast.success(`Selected ${role.title}! You can now refine your details.`);
   };
 
   return (
@@ -254,7 +237,7 @@ export default function CareerExplorerPage() {
                               <Progress value={option.match_score} className="h-2 w-24 ml-auto" />
                             </div>
                             <Button variant="outline" className="group-hover:bg-primary group-hover:text-white transition-colors border-primary/20">
-                              Generate Roadmap <ArrowRight className="ml-2 w-4 h-4" />
+                              Select this Major <CheckCircle2 className="ml-2 w-4 h-4" />
                             </Button>
                           </div>
                         </div>
@@ -268,98 +251,6 @@ export default function CareerExplorerPage() {
                 <Button variant="ghost" onClick={() => setStep('questions')}>
                   <ChevronLeft className="w-4 h-4 mr-2" /> Try different interests
                 </Button>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Step 4: Roadmap */}
-          {step === 'roadmap' && roadmap && (
-            <motion.div
-              key="roadmap"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-8 pb-20"
-            >
-              <header className="space-y-4">
-                <div className="flex items-center justify-between flex-wrap gap-4">
-                  <div className="space-y-1">
-                    <Badge className="bg-primary/10 text-primary border-none mb-2">Personalized Roadmap</Badge>
-                    <h1 className="text-4xl font-bold">{roadmap.title}</h1>
-                    <p className="text-muted-foreground text-lg">{roadmap.target_role} • {roadmap.timeframe_months} Months</p>
-                  </div>
-                  <Link href={`/squads?focus_area=${selectedRole?.title}`}>
-                    <Button className="btn-primary rounded-full px-6">Find {selectedRole?.title} Squads</Button>
-                  </Link>
-                </div>
-                <Card className="glass border-none bg-primary/5">
-                  <CardContent className="p-4 flex items-center gap-3">
-                    <Zap className="text-primary w-5 h-5 flex-shrink-0" />
-                    <p className="text-sm">{roadmap.roadmap_data.description}</p>
-                  </CardContent>
-                </Card>
-              </header>
-
-              <div className="space-y-12 relative">
-                {/* Connection Line */}
-                <div className="absolute left-6 top-8 bottom-0 w-0.5 bg-border z-0" />
-                
-                {roadmap.roadmap_data.phases.map((phase: any, i: number) => (
-                  <motion.div 
-                    key={i} 
-                    className="relative z-10 pl-16 space-y-4"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                  >
-                    <div className="absolute left-0 top-0 w-12 h-12 rounded-full bg-background border-2 border-primary flex items-center justify-center font-bold text-primary shadow-lg">
-                      {i + 1}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <h3 className="text-2xl font-bold">{phase.title}</h3>
-                      <p className="text-muted-foreground leading-relaxed">{phase.description}</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {phase.resources.map((res: any, j: number) => (
-                        <a key={j} href={res.url} target="_blank" rel="noopener noreferrer">
-                          <Card className="glass border-none hover:bg-muted/50 transition-colors h-full">
-                            <CardContent className="p-4 flex items-center justify-between gap-4">
-                              <div className="flex items-center gap-3">
-                                <div className="p-2 rounded-lg bg-primary/10">
-                                  <Search className="w-4 h-4 text-primary" />
-                                </div>
-                                <span className="font-medium text-sm line-clamp-1">{res.title}</span>
-                              </div>
-                              <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                            </CardContent>
-                          </Card>
-                        </a>
-                      ))}
-                    </div>
-                  </motion.div>
-                ))}
-
-                <motion.div 
-                  className="relative z-10 pl-16 pt-8"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.8 }}
-                >
-                  <div className="absolute left-0 top-8 w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white shadow-xl shadow-primary/20">
-                    <CheckCircle2 className="w-6 h-6" />
-                  </div>
-                  <div className="glass border border-primary/20 rounded-2xl p-8 space-y-4">
-                    <h3 className="text-2xl font-bold">Goal Achieved!</h3>
-                    <p className="text-muted-foreground">After completing these 6 phases, you will be ready to take on professional {selectedRole?.title} challenges.</p>
-                    <div className="flex gap-4 pt-2">
-                      <Link href="/dashboard" className="flex-1">
-                        <Button variant="secondary" className="w-full bg-muted hover:bg-muted/80">Go to Dashboard</Button>
-                      </Link>
-                      <Button className="flex-1 btn-primary" onClick={() => setStep('results')}>Explore Other Roles</Button>
-                    </div>
-                  </div>
-                </motion.div>
               </div>
             </motion.div>
           )}
