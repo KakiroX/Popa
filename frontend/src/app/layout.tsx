@@ -32,7 +32,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <main className="flex-1 flex flex-col">{children}</main>
-        <UniversityHelper />
+        <SchoolHelper />
         <Footer />
         <Toaster position="top-center" />
       </body>

@@ -108,9 +108,9 @@ export default function OnboardingPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>University</Label>
+                    <Label>Current School</Label>
                     <Input 
-                      placeholder="State University" 
+                      placeholder="Central High School" 
                       className="bg-muted border-border" 
                       value={formData.university}
                       onChange={(e) => setFormData({...formData, university: e.target.value})}
@@ -118,25 +118,29 @@ export default function OnboardingPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>Major</Label>
+                      <Label>Intended Major</Label>
                       <Input 
-                        placeholder="Computer Science" 
+                        placeholder="e.g. Computer Science" 
                         className="bg-muted border-border" 
                         value={formData.major}
                         onChange={(e) => setFormData({...formData, major: e.target.value})}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Year of Study</Label>
+                      <Label>Grade Level</Label>
                       <Select 
                         value={formData.year_of_study}
-                        onValueChange={(val) => setFormData({...formData, year_of_study: val || '1'})}
+                        onValueChange={(val) => setFormData({...formData, year_of_study: val || '9'})}
                       >
                         <SelectTrigger className="bg-muted border-border">
-                          <SelectValue placeholder="Select year" />
+                          <SelectValue placeholder="Select grade" />
                         </SelectTrigger>
                         <SelectContent>
-                          {[1, 2, 3, 4, 5, 6].map(y => <SelectItem key={y} value={y.toString()}>Year {y}</SelectItem>)}
+                          {[9, 10, 11, 12].map(y => (
+                            <SelectItem key={y} value={y.toString()}>
+                              {y}th Grade {y === 9 ? '(Freshman)' : y === 10 ? '(Sophomore)' : y === 11 ? '(Junior)' : '(Senior)'}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>

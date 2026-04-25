@@ -14,12 +14,12 @@ interface Message {
   content: string;
 }
 
-export default function UniversityHelper() {
+export default function SchoolHelper() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "Hi! I'm Squadie, your personal university AI helper. I know all about your achievements and major. How can I help you today?",
+      content: "Hi! I'm Squadie, your college prep AI helper. I know all about your achievements and intended major. How can I help you reach your dream university today?",
     },
   ]);
   const [input, setInput] = useState('');

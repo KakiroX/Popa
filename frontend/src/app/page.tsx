@@ -11,8 +11,8 @@ import { api } from '@/lib/api';
 export default function LandingPage() {
   const [stats, setStats] = useState([
     { label: 'Total Squads', value: '0', icon: Users },
-    { label: 'Students', value: '0', icon: GraduationCap },
-    { label: 'Challenges', value: '0', icon: Trophy },
+    { label: 'High Schoolers', value: '0', icon: GraduationCap },
+    { label: 'Projects Built', value: '0', icon: Trophy },
   ]);
 
   useEffect(() => {
@@ -21,8 +21,8 @@ export default function LandingPage() {
         const data = await api.stats.get();
         setStats([
           { label: 'Total Squads', value: data.total_squads.toString(), icon: Users },
-          { label: 'Students', value: data.total_students.toString(), icon: GraduationCap },
-          { label: 'Challenges', value: data.total_challenges_completed.toString(), icon: Trophy },
+          { label: 'High Schoolers', value: data.total_students.toString(), icon: GraduationCap },
+          { label: 'Projects Built', value: data.total_challenges_completed.toString(), icon: Trophy },
         ]);
       } catch (error) {
         console.error('Failed to fetch stats:', error);
@@ -33,18 +33,18 @@ export default function LandingPage() {
 
   const features = [
     {
-      title: 'Create Profile',
-      description: 'Highlight your skills, major, and achievements to find the perfect squad.',
+      title: 'Build Your Profile',
+      description: 'Highlight your skills, school, and academic interests to find the perfect team.',
       step: '01',
     },
     {
       title: 'Join a Squad',
-      description: 'Get matched with students from diverse backgrounds (Devs, Designers, Business).',
+      description: 'Get matched with other ambitious students to solve real problems together.',
       step: '02',
     },
     {
-      title: 'Conquer Challenges',
-      description: 'Complete AI-generated real-world tasks and build your portfolio.',
+      title: 'College Portfolio',
+      description: 'Complete AI-generated real-world tasks that make your university application stand out.',
       step: '03',
     },
   ];
@@ -65,16 +65,16 @@ export default function LandingPage() {
           className="z-10 text-center space-y-6 max-w-4xl"
         >
           <h1 className="text-6xl md:text-8xl font-bold tracking-tight">
-            Don't navigate alone. <br />
-            <span className="gradient-text">Build your squad.</span>
+            Build your future. <br />
+            <span className="gradient-text">Before university.</span>
           </h1>
           <p className="text-muted-foreground text-xl md:text-2xl max-w-2xl mx-auto">
-            The platform for multidisciplinary student collaboration powered by AI.
+            The platform for ambitious high school students to collaborate on real-world projects and build a stand-out portfolio.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
             <Link href="/auth">
               <Button size="lg" className="btn-primary text-lg px-8 py-6 rounded-full">
-                Get Started
+                Start My Portfolio
               </Button>
             </Link>
             <Link href="/squads">
@@ -106,7 +106,7 @@ export default function LandingPage() {
       <section className="py-24 px-4 max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">How it works</h2>
-          <p className="text-muted-foreground">Three steps to professional collaboration.</p>
+          <p className="text-muted-foreground">Three steps to a professional portfolio before you even graduate.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -137,9 +137,9 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section className="py-24 px-4 text-center">
         <div className="max-w-3xl mx-auto glass p-12 rounded-3xl space-y-8">
-          <h2 className="text-4xl font-bold">Ready to find your team?</h2>
+          <h2 className="text-4xl font-bold">Ready to stand out?</h2>
           <p className="text-muted-foreground text-xl">
-            Join hundreds of students already building amazing things together.
+            Join other students building amazing things for their college applications.
           </p>
           <Link href="/auth">
             <Button size="lg" className="btn-primary text-lg px-8 py-6 rounded-full">
@@ -151,4 +151,3 @@ export default function LandingPage() {
     </div>
   );
 }
-

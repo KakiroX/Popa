@@ -210,22 +210,22 @@ export default function DashboardPage() {
               )}
             </div>
 
-            {/* AI Career Advisor Section */}
+            {/* AI College Advisor Section */}
             <div className="pt-8">
               <Card className="glass border border-primary/20 bg-primary/5">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-primary" /> AI Career Advisor
+                    <Zap className="w-5 h-5 text-primary" /> AI College Prep Advisor
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    Get personalized recommendations for real-world jobs, internships, or open-source projects based on your major, skills, and squad achievements.
+                    Get personalized recommendations for summer programs, competitions, or open-source projects based on your intended major, skills, and school achievements.
                   </p>
                   
                   {!careerAdvice && !adviceLoading && (
                     <Button onClick={handleGetCareerAdvice} className="btn-primary" disabled={adviceLoading}>
-                      Ask for Career Advice
+                      Ask for College Prep Advice
                     </Button>
                   )}
                   

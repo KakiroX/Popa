@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MapPin, BookOpen, Trophy, Heart, Briefcase, Mail, Loader2 } from 'lucide-react';
+import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Profile } from '@/types';
 import { useParams } from 'next/navigation';
@@ -86,7 +87,7 @@ export default function ProfilePage() {
                 <div>
                   <h1 className="text-3xl font-bold">{profile.full_name}</h1>
                   <p className="text-muted-foreground flex items-center gap-2 mt-1">
-                    <BookOpen className="w-4 h-4" /> {profile.major} • Year {profile.year_of_study}
+                    <BookOpen className="w-4 h-4" /> {profile.major} • {profile.year_of_study}th Grade
                   </p>
                   <p className="text-muted-foreground flex items-center gap-2 mt-1">
                     <MapPin className="w-4 h-4" /> {profile.university}
@@ -94,7 +95,9 @@ export default function ProfilePage() {
                 </div>
                 
                 {isOwnProfile ? (
-                  <Button variant="outline" className="border-border">Edit Profile</Button>
+                  <Link href="/profile/edit">
+                    <Button variant="outline" className="border-border">Edit Profile</Button>
+                  </Link>
                 ) : (
                   <Button className="btn-primary">Invite to Squad</Button>
                 )}
