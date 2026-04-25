@@ -23,45 +23,19 @@ def generate_challenge(req: ChallengeGenerateRequest, user = Depends(get_current
     members_res = supabase.table("squad_members").select("*, profiles(*)").eq("squad_id", req.squad_id).execute()
     members = members_res.data
     
-    member_descriptions = []
-    roles = []
-    for m in members:
-        prof = m.get("profiles", {})
-        role = m.get("role_in_squad", "Member")
-        roles.append(role)
-        skills = prof.get('skills', [])
-        skills_text = ", ".join(skills[:5]) # Limit to top 5 skills
-        member_descriptions.append(f"Role: {role}, Major: {prof.get('major', 'Unknown')}, Skills: {skills_text}")
+    member_descriptions = [f"{m.get('role_in_squad')}: {m.get('profiles', {}).get('major')} ({', '.join(m.get('profiles', {}).get('skills', [])[:3])})" for m in members]
 
-    prompt = f"""You are an AI challenge scout for a student squad. DO NOT invent a fictional challenge. 
-Instead, SEARCH THE INTERNET for a REAL, existing hackathon, open-source issue, business case competition, or startup bounty that fits this squad's focus area and skills.
-Once you find a real-world challenge, adapt it into the JSON schema below. 
-In the description, you MUST include the real name of the event/company and briefly explain where you found it online.
-
-The challenge must require genuine collaboration between all roles present in the squad. 
-Return ONLY valid JSON matching the schema below, with no extra text.
-
-Squad Focus Area: {squad.get('focus_area', 'Any')}
-Difficulty: {req.difficulty}
-Category: {req.category}
-Squad Members:
-{chr(10).join(member_descriptions)}
-
-Required JSON Schema:
+    prompt = f"""Find a REAL {req.category} (hackathon/bounty/issue) matching Focus: {squad.get('focus_area', 'Any')}, Difficulty: {req.difficulty}.
+Squad: {'; '.join(member_descriptions)}
+Return JSON:
 {{
-  "title": "string (Title of the REAL challenge/hackathon)",
-  "description": "string (3-4 paragraphs, inspiring and specific, mentioning the real-world source and link context)",
-  "tasks": [
-    {{
-      "task_title": "string",
-      "assigned_role": "string (must match one of the squad roles)",
-      "description": "string"
-    }}
-  ],
+  "title": "REAL event title",
+  "description": "3-4 paras + source link info",
+  "tasks": [{{"task_title": "str", "assigned_role": "match squad role", "description": "str"}}],
   "deadline_days": 7,
-  "success_criteria": ["string", "string", "string"]
+  "success_criteria": ["str"]
 }}
-"""
+Constraint: Must require collaboration between roles."""
     try:
         response = client.models.generate_content(
             model=model_id,
