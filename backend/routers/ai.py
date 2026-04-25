@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from routers.career import analyze_cv, generate_roadmap, list_my_roadmaps, get_roadmap
+from routers.assistant import analyze_cv, generate_roadmap, list_my_roadmaps, get_roadmap
 from routers.profiles import chat_with_helper
 from dependencies import get_current_user
 from models.schemas import CVAnalyzeRequest, RoadmapGenerateRequest, ChatRequest, ProfileUpdate
