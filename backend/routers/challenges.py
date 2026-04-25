@@ -20,7 +20,7 @@ def generate_challenge(req: ChallengeGenerateRequest, user = Depends(get_current
          raise HTTPException(status_code=404, detail="Squad not found")
     squad = squad_res.data[0]
     
-    members_res = supabase.table("squad_members").select("*, profiles(*)").eq("squad_id", req.squad_id).execute()
+    members_res = supabase.table("squad_members").select("role_in_squad").eq("squad_id", req.squad_id).execute()
     members = members_res.data
     
     roles_list = [m.get('role_in_squad') for m in members]
@@ -30,9 +30,8 @@ def generate_challenge(req: ChallengeGenerateRequest, user = Depends(get_current
             model=model_id,
             contents=prompt,
             config=types.GenerateContentConfig(
-                system_instruction="Search real events. JSON: {title, description, tasks:[{task_title, assigned_role, description}], deadline_days, success_criteria}.",
-                response_mime_type="application/json",
-                tools=[{"google_search": {}}]
+                system_instruction="Return JSON: {title, description, tasks:[{task_title, assigned_role, description}], deadline_days, success_criteria}.",
+                response_mime_type="application/json"
             )
         )
         parsed = json.loads(response.text)
@@ -87,7 +86,7 @@ def submit_challenge(challenge_id: str, sub: ChallengeSubmission, user = Depends
     supabase.table("challenges").update({"status": "completed"}).eq("id", challenge_id).execute()
     
     # Give achievement to all squad members
-    members_res = supabase.table("squad_members").select("*, profiles(*)").eq("squad_id", squad_id).execute()
+    members_res = supabase.table("squad_members").select("profiles(id, achievements)").eq("squad_id", squad_id).execute()
     
     today_str = datetime.now().strftime("%Y-%m-%d")
     new_ach = {
