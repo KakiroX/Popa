@@ -11,7 +11,6 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Check, ChevronLeft, Loader2, Save, X, Plus, Trophy, Heart, Briefcase, Compass, Sparkles } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
