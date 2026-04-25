@@ -23,6 +23,7 @@ CREATE TABLE squads (
   name TEXT NOT NULL,
   description TEXT,
   focus_area TEXT,
+  needed_roles TEXT[],
   max_members INT DEFAULT 5,
   is_open BOOLEAN DEFAULT TRUE,
   created_by UUID REFERENCES profiles(id),

@@ -5,12 +5,59 @@ from google.genai import types
 from database import supabase
 from config import GEMINI_API_KEY, GEMINI_MODEL
 from dependencies import get_current_user
-from models.schemas import RoadmapGenerateRequest, CareerRoadmap, CVAnalyzeRequest
+from models.schemas import RoadmapGenerateRequest, CareerRoadmap, CVAnalyzeRequest, CareerPickRequest, CareerPickResponse
 from typing import List
 
 router = APIRouter()
 client = genai.Client(api_key=GEMINI_API_KEY)
 model_id = GEMINI_MODEL
+
+@router.post("/career-pick", response_model=CareerPickResponse)
+def pick_career(req: CareerPickRequest, user = Depends(get_current_user)):
+    # 1. Fetch Profile
+    prof_res = supabase.table("profiles").select("*").eq("id", user.id).execute()
+    profile = prof_res.data[0] if prof_res.data else {}
+    
+    # 2. Build Prompt
+    prompt = f"""You are a brilliant Career Matchmaker. Suggest 3 specific career roles for this student.
+    
+    Student Interests:
+    - Passions: {req.passions}
+    - Favorite Subjects: {req.favorite_subjects}
+    - Desired Impact: {req.desired_impact}
+    
+    Student Profile:
+    - Current Major: {profile.get('major')}
+    - Current Skills: {', '.join(profile.get('skills', []))}
+    
+    For each career role, estimate a "match_score" (0-100) based on their current skills vs requirements.
+    Provide a compelling "why_it_fits" explanation.
+    
+    Return ONLY valid JSON matching this schema:
+    {{
+        "options": [
+            {{
+                "title": "Role Title",
+                "description": "Short role overview",
+                "match_score": 85,
+                "why_it_fits": "..."
+            }}
+        ]
+    }}
+    """
+
+    try:
+        response = client.models.generate_content(
+            model=model_id,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                system_instruction="You are a career matching expert. Be realistic and encouraging.",
+                response_mime_type="application/json"
+            )
+        )
+        return json.loads(response.text)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI Career Pick error: {str(e)}")
 
 @router.post("/roadmap")
 def generate_roadmap(req: RoadmapGenerateRequest, user = Depends(get_current_user)):

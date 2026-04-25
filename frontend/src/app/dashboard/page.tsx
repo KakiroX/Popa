@@ -210,39 +210,50 @@ export default function DashboardPage() {
               )}
             </div>
 
-            {/* AI College Advisor Section */}
+            {/* AI Career Path Section */}
             <div className="pt-8">
-              <Card className="glass border border-primary/20 bg-primary/5">
+              <Card className="glass border border-primary/20 bg-primary/5 relative overflow-hidden">
+                <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-primary" /> AI Career Mentor
+                    <Compass className="w-5 h-5 text-primary" /> AI Career Path Explorer
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 relative z-10">
                   <p className="text-sm text-muted-foreground">
-                    Bite-sized recommendations for programs and projects based on your profile.
+                    Undecided? Let our AI analyze your passions and skills to pick the perfect career path and generate a personalized roadmap.
                   </p>
                   
-                  {!careerAdvice && !adviceLoading && (
-                    <Button onClick={handleGetCareerAdvice} className="btn-primary" disabled={adviceLoading}>
-                      Ask for College Prep Advice
+                  <Link href="/major-explorer">
+                    <Button className="btn-primary w-full sm:w-auto">
+                      Start AI Career Discovery <Sparkles className="ml-2 w-4 h-4" />
                     </Button>
-                  )}
-                  
-                  {adviceLoading && (
-                    <div className="flex items-center text-primary text-sm gap-2 mt-4">
-                      <Loader2 className="w-4 h-4 animate-spin" /> Fetching real-world opportunities...
-                    </div>
-                  )}
-                  
-                  {careerAdvice && (
-                    <div className="mt-4 p-4 rounded-xl bg-muted/50 border border-border prose prose-invert text-sm max-w-none">
-                      <div dangerouslySetInnerHTML={{ __html: careerAdvice.replace(/\n/g, '<br/>') }} />
-                      <Button onClick={handleGetCareerAdvice} variant="outline" size="sm" className="mt-4 border-border">
-                        Refresh Advice
+                  </Link>
+
+                  <div className="pt-4 border-t border-border/50">
+                    <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">Or get quick advice</p>
+                    
+                    {!careerAdvice && !adviceLoading && (
+                      <Button onClick={handleGetCareerAdvice} variant="outline" className="border-border w-full sm:w-auto" disabled={adviceLoading}>
+                        Quick Career Prep Advice
                       </Button>
-                    </div>
-                  )}
+                    )}
+                    
+                    {adviceLoading && (
+                      <div className="flex items-center text-primary text-sm gap-2 mt-2">
+                        <Loader2 className="w-4 h-4 animate-spin" /> Fetching opportunities...
+                      </div>
+                    )}
+                    
+                    {careerAdvice && (
+                      <div className="mt-2 p-4 rounded-xl bg-muted/50 border border-border prose prose-invert text-sm max-w-none">
+                        <div dangerouslySetInnerHTML={{ __html: careerAdvice.replace(/\n/g, '<br/>') }} />
+                        <Button onClick={handleGetCareerAdvice} variant="ghost" size="sm" className="mt-4 hover:bg-primary/10">
+                          Refresh Advice
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>

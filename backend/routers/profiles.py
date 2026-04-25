@@ -15,32 +15,42 @@ def chat_with_helper(req: ChatRequest, user = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="Profile not found")
     profile = response.data[0]
     
+    # Fetch active roadmap goal
+    roadmaps_res = supabase.table("career_roadmaps").select("target_role").eq("user_id", user.id).order("created_at", desc=True).limit(1).execute()
+    active_goal = roadmaps_res.data[0].get("target_role") if roadmaps_res.data else "not yet set"
+    
     achievements = profile.get("achievements") or []
     ach_text = ""
-    # Only use top 3 achievements and truncate them to save context
     for ach in achievements[:3]:
         title = ach.get('title', 'Project')
         desc = ach.get('description', '')
         short_desc = (desc[:60] + '..') if len(desc) > 60 else desc
         ach_text += f"- {title}: {short_desc}\n"
         
-    if not ach_text:
-        ach_text = "No achievements listed."
-        
     skills = profile.get('skills') or []
-    skills_text = ", ".join(skills[:8]) # Limit skills
+    skills_text = ", ".join(skills[:10])
 
-    system_instruction = f"""You are 'Squadie', a concise university AI helper. 
-Help the student using these details:
-Major: {profile.get('major', 'Unknown')}
-Skills: {skills_text}
-Achievements: {ach_text}
+    system_instruction = f"""You are 'Squadie', a brilliant and supportive career mentor for students. 
+Current Student Profile:
+- Major: {profile.get('major', 'Unknown')}
+- Current Skills: {skills_text}
+- Top Achievements: 
+{ach_text if ach_text else "None listed yet."}
+- Primary Career Goal: {active_goal}
 
-Be brief. Use Google Search for external trends/ops only if needed."""
+Your core mission:
+1. Provide specific, actionable skill gap insights. If they have a goal, tell them what skills they are missing based on industry standards.
+2. Suggest relevant squads or projects they should join.
+3. Be encouraging but realistic.
+4. Keep responses concise (under 3-4 short paragraphs).
+5. Use Google Search to find specific internship trends or new technologies if relevant.
+
+If the user asks 'how do I become a [role]', analyze their current skills against that role and list the top 3 gaps."""
 
     try:
         config_ai = types.GenerateContentConfig(
-            system_instruction=system_instruction
+            system_instruction=system_instruction,
+            tools=[{"google_search": {}}]
         )
         ai_response = client.models.generate_content(
             model=GEMINI_MODEL,

@@ -92,16 +92,20 @@ class MessageResponse(BaseModel):
 
 class Job(BaseModel):
     id: str
-    title: str
+    job_title: str
     company: str
-    description: str
-    requirements: Optional[str] = None
-    skills_required: List[str]
-    experience_level: str # fresher, junior, mid
-    career_track: str # web_development, data, design, marketing
-    remote: bool = False
-    salary_range: Optional[str] = None
-    posted_at: datetime
+    location: Optional[str] = None
+    job_description: str
+    required_skills: List[str] = []
+    experience_level: str # fresher, junior, mid, senior
+    salary_min: Optional[int] = None
+    salary_max: Optional[int] = None
+    responsibilities: List[str] = []
+    requirements: List[str] = []
+    benefits: List[str] = []
+    url: Optional[str] = None
+    source: Optional[str] = "CareerBridge"
+    created_at: datetime
 
 class JobMatch(BaseModel):
     job: Dict[str, Any]
@@ -127,12 +131,17 @@ class CVAnalyzeRequest(BaseModel):
     raw_text: str
 
 class CareerRoadmap(BaseModel):
-    id: str
+    id: int
     user_id: str
     title: str
-    description: str
-    steps: List[RoadmapStep]
+    target_role: str
+    roadmap_data: Dict[str, Any]
+    timeframe_months: int
+    learning_hours_per_week: int
+    progress_percentage: int = 0
+    completed_phases: List[int] = []
     created_at: datetime
+    updated_at: datetime
 
 class LearningResource(BaseModel):
     id: str
@@ -140,3 +149,17 @@ class LearningResource(BaseModel):
     url: str
     type: str # video, course, article
     skill_tag: str
+
+class CareerPickRequest(BaseModel):
+    passions: str
+    favorite_subjects: str
+    desired_impact: str
+
+class CareerOption(BaseModel):
+    title: str
+    description: str
+    match_score: int
+    why_it_fits: str
+
+class CareerPickResponse(BaseModel):
+    options: List[CareerOption]

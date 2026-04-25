@@ -19,7 +19,7 @@ export default function SchoolHelper() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "Hi! I'm Squadie, your college prep AI helper. I know all about your achievements and intended major. How can I help you reach your dream university today?",
+      content: "Hi! I'm Squadie, your career and college prep AI helper. I can help you pick a career path, analyze your skill gaps, and reach your goals. How can I help you today?",
     },
   ]);
   const [input, setInput] = useState('');

@@ -154,7 +154,7 @@ export default function EditProfilePage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Intended Major</Label>
+                  <Label>Intended Career / Major</Label>
                   <Input 
                     value={profile.major || ''}
                     onChange={(e) => setProfile({...profile, major: e.target.value})}
@@ -162,7 +162,7 @@ export default function EditProfilePage() {
                   />
                   <Link href="/major-explorer">
                     <Button variant="link" className="text-[10px] h-auto p-0 text-primary flex items-center gap-1 opacity-70 hover:opacity-100">
-                      <Compass className="w-3 h-3" /> Don't know your major?
+                      <Sparkles className="w-3 h-3" /> Find your path with AI Picker
                     </Button>
                   </Link>
                 </div>

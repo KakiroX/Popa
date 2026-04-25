@@ -61,6 +61,16 @@ export const api = {
   },
   stats: {
     get: () => apiFetch('/api/stats'),
+  },
+  assistant: {
+    generateRoadmap: (data: { target_role: string; timeframe_months: number; learning_hours_per_week: number }) => 
+      apiFetch('/api/assistant/roadmap', { method: 'POST', body: JSON.stringify(data) }),
+    listRoadmaps: () => apiFetch('/api/assistant/roadmaps'),
+    getRoadmap: (id: string) => apiFetch(`/api/assistant/roadmaps/${id}`),
+    analyzeCV: (raw_text: string) => apiFetch('/api/assistant/cv-analyze', { method: 'POST', body: JSON.stringify({ raw_text }) }),
+    saveCV: (raw_text: string) => apiFetch('/api/assistant/cv-save', { method: 'POST', body: JSON.stringify({ raw_text }) }),
+    careerPick: (data: { passions: string; favorite_subjects: string; desired_impact: string }) =>
+      apiFetch('/api/assistant/career-pick', { method: 'POST', body: JSON.stringify(data) }),
   }
 };
 

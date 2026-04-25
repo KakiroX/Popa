@@ -2,10 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from database import supabase
 from dependencies import get_current_user
 from models.schemas import SquadCreate, SquadResponse, MessageCreate
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from google import genai
 from google.genai import types
 from config import GEMINI_API_KEY, GEMINI_MODEL
+from services.matching_service import matching_service
 
 router = APIRouter()
 
@@ -29,11 +30,11 @@ def create_squad(squad: SquadCreate, user = Depends(get_current_user)):
     if not profile_check.data:
         raise HTTPException(status_code=400, detail="You must complete onboarding to create a profile before making a squad.")
 
-    squad_data = squad.dict(exclude={"needed_roles"})
+    squad_data = squad.dict()
     squad_data["created_by"] = user.id
     squad_data["is_open"] = True
     
-    # Needs transaction-like behavior or two requests
+    # Insert squad
     response = supabase.table("squads").insert(squad_data).execute()
     new_squad = response.data[0]
     
@@ -41,7 +42,7 @@ def create_squad(squad: SquadCreate, user = Depends(get_current_user)):
     member_data = {
         "squad_id": new_squad["id"],
         "user_id": user.id,
-        "role_in_squad": "Creator" # Or whatever role they selected
+        "role_in_squad": "Creator"
     }
     supabase.table("squad_members").insert(member_data).execute()
     
@@ -52,7 +53,6 @@ def create_squad(squad: SquadCreate, user = Depends(get_current_user)):
 
 @router.get("/match")
 def match_squads(user = Depends(get_current_user)):
-    # Basic matching algorithm
     # 1. Get user profile
     profile_res = supabase.table("profiles").select("*").eq("id", user.id).execute()
     if not profile_res.data:
@@ -63,13 +63,30 @@ def match_squads(user = Depends(get_current_user)):
     squads_res = supabase.table("squads").select("*").eq("is_open", True).execute()
     squads = squads_res.data
     
-    # Mock basic scoring
+    # 3. Get all squad members for size calculation
+    # In a real app, we'd do this more efficiently (e.g., with a count query or join)
+    members_res = supabase.table("squad_members").select("squad_id").execute()
+    all_members = members_res.data
+    
+    # Group members by squad_id
+    from collections import defaultdict
+    squad_member_counts = defaultdict(list)
+    for m in all_members:
+        squad_member_counts[m["squad_id"]].append(m)
+    
+    # 4. Score squads
     scored_squads = []
     for s in squads:
-        score = 0
-        if s.get("focus_area") == profile.get("major"): # Just an example match
-            score += 2
-        scored_squads.append({"squad": s, "score": score, "match_reason": "Based on focus area"})
+        # Skip if user is already a member
+        if any(m["user_id"] == user.id for m in squad_member_counts[s["id"]]):
+            continue
+            
+        match_data = matching_service.calculate_squad_match(profile, s, squad_member_counts[s["id"]])
+        scored_squads.append({
+            "squad": s, 
+            "score": match_data["score"], 
+            "match_reason": match_data["match_reason"]
+        })
         
     scored_squads.sort(key=lambda x: x["score"], reverse=True)
     return scored_squads[:3]
