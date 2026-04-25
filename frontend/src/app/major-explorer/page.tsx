@@ -236,7 +236,14 @@ export default function CareerExplorerPage() {
                               <div className="text-4xl font-bold text-primary">{option.match_score}%</div>
                               <Progress value={option.match_score} className="h-2 w-24 ml-auto" />
                             </div>
-                            <Button variant="outline" className="group-hover:bg-primary group-hover:text-white transition-colors border-primary/20">
+                            <Button 
+                              variant="outline" 
+                              className="group-hover:bg-primary group-hover:text-white transition-colors border-primary/20"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleSelectRole(option);
+                              }}
+                            >
                               Select this Major <CheckCircle2 className="ml-2 w-4 h-4" />
                             </Button>
                           </div>
