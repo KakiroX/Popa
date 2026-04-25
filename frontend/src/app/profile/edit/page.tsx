@@ -159,6 +159,11 @@ export default function EditProfilePage() {
                     onChange={(e) => setProfile({...profile, major: e.target.value})}
                     className="bg-muted border-border"
                   />
+                  <Link href="/major-explorer">
+                    <Button variant="link" className="text-[10px] h-auto p-0 text-primary flex items-center gap-1 opacity-70 hover:opacity-100">
+                      <Compass className="w-3 h-3" /> Don't know your major?
+                    </Button>
+                  </Link>
                 </div>
                 <div className="space-y-2">
                   <Label>Grade Level</Label>

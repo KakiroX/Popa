@@ -9,8 +9,9 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { Check, ChevronRight, ChevronLeft, Loader2 } from 'lucide-react';
+import { Check, ChevronRight, ChevronLeft, Loader2, Compass } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -125,6 +126,11 @@ export default function OnboardingPage() {
                         value={formData.major}
                         onChange={(e) => setFormData({...formData, major: e.target.value})}
                       />
+                      <Link href="/major-explorer">
+                        <Button variant="link" className="text-[10px] h-auto p-0 text-primary flex items-center gap-1 opacity-70 hover:opacity-100">
+                          <Compass className="w-3 h-3" /> Don't know your major?
+                        </Button>
+                      </Link>
                     </div>
                     <div className="space-y-2">
                       <Label>Grade Level</Label>
