@@ -136,39 +136,15 @@ def send_squad_message(squad_id: str, msg: MessageCreate, user = Depends(get_cur
     if content_strip.lower().startswith("/ai"):
         user_prompt = content_strip[3:].strip()
         
-        # 1. Get Squad Context & Members
-        squad_res = supabase.table("squads").select("*").eq("id", squad_id).execute()
-        if not squad_res.data:
-            raise HTTPException(status_code=404, detail="Squad not found")
-        squad = squad_res.data[0]
+        # 1. Get Core Squad Focus only
+        squad_res = supabase.table("squads").select("focus_area").eq("id", squad_id).execute()
+        squad_focus = squad_res.data[0].get('focus_area') if squad_res.data else "General"
         
-        members_res = supabase.table("squad_members").select("role_in_squad").eq("squad_id", squad_id).execute()
-        roles = [m['role_in_squad'] for m in members_res.data]
-        
-        # 2. Get Active Challenge (Situational Awareness)
-        challenge_res = supabase.table("challenges").select("title, description").eq("squad_id", squad_id).eq("status", "active").limit(1).execute()
-        active_challenge = challenge_res.data[0] if challenge_res.data else None
-        
-        # 3. Get Lean Chat History (Last 8 messages for flow, without bloating tokens)
-        history_res = supabase.table("squad_messages").select("content, is_ai").eq("squad_id", squad_id).order("created_at", desc=True).limit(8).execute()
-        history = reversed(history_res.data) # Back to chronological
-        history_text = "\n".join([f"{'Coach' if m['is_ai'] else 'User'}: {m['content']}" for m in history])
-
         ai_response_text = ""
         try:
+            # Minimalist prompt, no history, no search
             config = types.GenerateContentConfig(
-                system_instruction=f"""You are the Squad AI Coach. 
-Context:
-- Squad Focus: {squad.get('focus_area')}
-- Team Roles: {', '.join(roles)}
-- Active Project: {active_challenge['title'] if active_challenge else 'None yet'}
-{f'- Project Goal: {active_challenge["description"][:200]}...' if active_challenge else ''}
-
-Recent Conversation:
-{history_text}
-
-Task: Answer the user's request concisely. Use Google Search for real-world data/trends. Stay in character as a helpful project mentor.""",
-                tools=[{"google_search": {}}]
+                system_instruction=f"You are the Squad AI Coach. Squad Focus: {squad_focus}. Answer the student's request concisely and professionally."
             )
 
             response = client.models.generate_content(
