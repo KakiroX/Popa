@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Users, Trophy, ChevronRight, Zap, Loader2, Compass, Sparkles } from 'lucide-react';
+import { Calendar, Users, Trophy, ChevronRight, Zap, Loader2, Compass, Sparkles, Map } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Profile, Squad } from '@/types';
@@ -157,6 +157,24 @@ export default function DashboardPage() {
                 </div>
               </CardContent>
             </Card>
+
+            <Card className="glass border-none overflow-hidden group">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Map className="w-5 h-5 text-accent" /> University Explorer
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Explore universities across the globe with our interactive map and selector tool.
+                </p>
+                <Link href="/university-selector/index.html" target="_blank">
+                  <Button variant="outline" className="w-full border-primary/20 hover:bg-primary/10 group-hover:border-primary/50 transition-all">
+                    Open Map <ChevronRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Right Column: Activity Feed */}
@@ -264,4 +282,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>University Selector</title>
+  <link rel="stylesheet" href="./static/css/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+  <!-- Icons -->
+  <link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="./static/css/leaflet.extra-markers.min.css">
+  <!-- Icons -->
+  <script src="./static/leaflet.extra-markers.min.js"></script>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css?family=Sanchez" rel="stylesheet">
+  <!-- D3 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
+  <!-- chart.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <nav class="navbar navbar-inverse navbar-light bg-light" data-spy="affix" data-offset-top="197">
+          <!-- <div class="container-fluid"> -->
+          <!-- <div class="navbar-header"> -->
+          <div class="navbar-brand" href="#">University Selector</div>
+          <ul class="nav navbar-nav">
+            <li> <a id="map" href="#map-id" target="_self"> Map </a> </li>
+            <li> <a id="demo" href="#chartContainer" target="_self"> Demographic Information</a> </li>
+            <li> <a id="financial" href="#tuition_chart" target="_self"> Financial Information </a> </li>
+            <li> <a id="acceptance" href="#acceptance_chart" target="_self"> Acceptance Rate </a> </li>
+            <li> <a id="tree" href="#treeContainer" target="_self"> Admissions Criteria </a> </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Map - map Layers: marker shows acceptance rate  and the size of marker would be according to acceptance rate
+  +pop up for the address and website Debbie -->
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <div  id="map-id"  style="width: 750px; height: 500px;">
+        </div>
+      </div>
+
+
+      <!-- dropdown to choose  Sara -->
+
+      <div class="col-md-4">
+        <div class='container'>
+          <div class="row">
+            <div class="col-sm-12">
+              <h2>Major and State</h2>
+              <h3>Please Choose a State</h3>
+              <!-- dropdown -->
+              <select id="selDataset" onchange="optionChanged(this.value)"></select>
+            </div>
+          </div>
+        </div>
+        <!-- checkbox   -->
+        <div class='container'>
+          <div class="row">
+            <div class="col-sm-12">
+              <h3>Please Choose a Major</h3>
+              <div id = "myRadios">
+              </div>
+              <input type="submit" value="submit" onclick="btnSubmit()" />
+            </div>
+          </div>
+        </div>
+
+        <!-- List  -->
+        <div class='container'>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="panel panel-info">
+                <div class="panel-heading">List of universities</div>
+                <ul id=sampleList></ul>
+                <div class="panel-body"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- list of Universities :10 Universities sorted by acceptance rate , shows the university logo next to it
+  Sara -->
+  <!-- <div class="container">
+  <div class="row">
+  <div class="col-md-4">
+  <span class="border border-primary">
+  <h3>Lorem ipsum dolor sit amet, consectetur adipiscing
+  elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ultricies
+  lacus sed turpis tincidunt id. Vulputate enim nulla aliquet porttitor lacus
+</h3>
+</span>
+<span class="border border-secondary"></span>
+</div>
+</div>
+</div> -->
+<!-- the part that will appear after clicking on show -->
+
+
+<!-- Dashboard  -->
+
+<!-- 1st chart : collapsible tree : admissions criteria -->
+<div class="container">
+  <div id="treeContainer" class="row">
+    <h3>Admissions Criteria</h3>
+    <canvas id="tree"></canvas>
+  </div>
+</div>
+
+<br>
+
+<!-- 2nd chart : demographic data : gender,Ethnicity, age ,etc  Sara -->
+
+<div class="container">
+  <div id="chartContainer" class="row">
+    <h3> Demographic</h3>
+    <canvas id="DemoChart"></canvas>
+  </div>
+</div>
+
+<br>
+
+<!-- 3rd chart : Combo chart of bar and line chart comparing tuition and financial aid (grants and loans) by universities. Debbie -->
+<div id="tuition_chart" class="row">
+</div>
+
+<br>
+
+<!--- 4th : Histogram Acceptance Rate : Rupali -->
+<div id="acceptance_chart" class="row">
+</div>
+
+<br>
+<script type="text/javascript" src="./static/app.js"></script>
+
+
+<body>
