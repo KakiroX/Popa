@@ -10,47 +10,24 @@ router = APIRouter()
 client = genai.Client(api_key=GEMINI_API_KEY)
 @router.post("/chat")
 def chat_with_helper(req: ChatRequest, user = Depends(get_current_user)):
-    response = supabase.table("profiles").select("*").eq("id", user.id).execute()
+    response = supabase.table("profiles").select("major,skills,achievements").eq("id", user.id).execute()
     if not response.data:
         raise HTTPException(status_code=404, detail="Profile not found")
     profile = response.data[0]
     
-    # Fetch active roadmap goal
-    roadmaps_res = supabase.table("career_roadmaps").select("target_role").eq("user_id", user.id).order("created_at", desc=True).limit(1).execute()
-    active_goal = roadmaps_res.data[0].get("target_role") if roadmaps_res.data else "not yet set"
-    
     achievements = profile.get("achievements") or []
-    ach_text = ""
-    for ach in achievements[:3]:
-        title = ach.get('title', 'Project')
-        desc = ach.get('description', '')
-        short_desc = (desc[:60] + '..') if len(desc) > 60 else desc
-        ach_text += f"- {title}: {short_desc}\n"
-        
+    ach_titles = ", ".join(a.get("title", "") for a in achievements[:2]) or "None"
+    
     skills = profile.get('skills') or []
-    skills_text = ", ".join(skills[:10])
+    skills_text = ", ".join(skills[:5])
 
-    system_instruction = f"""You are 'Squadie', a brilliant and supportive career mentor for students. 
-Current Student Profile:
-- Major: {profile.get('major', 'Unknown')}
-- Current Skills: {skills_text}
-- Top Achievements: 
-{ach_text if ach_text else "None listed yet."}
-- Primary Career Goal: {active_goal}
-
-Your core mission:
-1. Provide specific, actionable skill gap insights. If they have a goal, tell them what skills they are missing based on industry standards.
-2. Suggest relevant squads or projects they should join.
-3. Be encouraging but realistic.
-4. Keep responses concise (under 3-4 short paragraphs).
-5. Use Google Search to find specific internship trends or new technologies if relevant.
-
-If the user asks 'how do I become a [role]', analyze their current skills against that role and list the top 3 gaps."""
+    system_instruction = f"""You are Squadie, a concise student career mentor.
+Student: major={profile.get('major','Unknown')}, skills=[{skills_text}], achievements=[{ach_titles}].
+Rules: Be brief (max 3 short paragraphs). Be actionable. Suggest skill gaps and projects when relevant."""
 
     try:
         config_ai = types.GenerateContentConfig(
             system_instruction=system_instruction,
-            tools=[{"google_search": {}}]
         )
         ai_response = client.models.generate_content(
             model=GEMINI_MODEL,
