@@ -91,3 +91,24 @@
 .btn-primary {
   @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200 font-medium;
 }
+
+/* Landing page scoped overrides — keeps other pages untouched */
+body.landing-active {
+  background: #000000 !important;
+}
+body.landing-active footer {
+  background: #050510 !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+body.landing-active footer span,
+body.landing-active footer a {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+body.landing-active footer a:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+body.landing-active footer .font-bold {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
