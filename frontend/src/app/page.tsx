@@ -235,17 +235,6 @@ export default function LandingPage() {
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           className="z-10 text-center space-y-8 max-w-5xl"
         >
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-sm text-white/50 backdrop-blur-md"
-          >
-            <Sparkles className="w-4 h-4 text-white/60" />
-            Powered by Google Gemini AI
-          </motion.div>
-
           <h1 className="text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-tight leading-[0.95]">
             <span className="text-white">Build your future.</span>
             <br />
